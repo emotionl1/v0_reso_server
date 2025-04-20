@@ -3,1493 +3,1715 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>레조넌스 정보 사이트</title>
+    <title>레조넌스 - 게임 정보</title>
     <style>
-        /* 전역 스타일 */
+        :root {
+            --primary-color: #3a0ca3;
+            --secondary-color: #7209b7;
+            --accent-color: #f72585;
+            --dark-color: #1a1a2e;
+            --light-color: #f8f9fa;
+            --gray-color: #6c757d;
+            --success-color: #4cc9f0;
+            --warning-color: #f8961e;
+            --danger-color: #ef233c;
+        }
+
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Arial', sans-serif;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
-        
+
         body {
             background-color: #f5f5f5;
             color: #333;
             line-height: 1.6;
         }
-        
-        a {
-            text-decoration: none;
-            color: inherit;
-        }
-        
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 20px;
-        }
-        
-        section {
-            padding: 80px 0;
-            min-height: 100vh;
-        }
-        
-        h2 {
-            font-size: 2.5rem;
-            margin-bottom: 20px;
-            color: #2c3e50;
-            text-align: center;
-        }
-        
-        p.description {
-            text-align: center;
-            margin-bottom: 40px;
-            font-size: 1.1rem;
-            color: #7f8c8d;
-        }
-        
+
         /* 헤더 스타일 */
         header {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
-            background-color: #2c3e50;
+            background-color: var(--dark-color);
             color: white;
-            padding: 15px 0;
-            z-index: 1000;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-        }
-        
-        .header-container {
+            padding: 1rem 2rem;
             display: flex;
             justify-content: space-between;
             align-items: center;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
         }
-        
+
         .logo {
-            display: flex;
-            align-items: center;
-            font-size: 1.5rem;
+            font-size: 1.8rem;
             font-weight: bold;
+            color: var(--accent-color);
         }
-        
-        .logo img {
-            height: 40px;
-            margin-right: 10px;
-        }
-        
+
         nav ul {
             display: flex;
             list-style: none;
         }
-        
+
         nav ul li {
-            margin-left: 30px;
+            margin-left: 1.5rem;
         }
-        
+
         nav ul li a {
-            font-size: 1.1rem;
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
             transition: color 0.3s;
-            position: relative;
-            padding: 5px 0;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
         }
-        
+
         nav ul li a:hover {
-            color: #3498db;
+            color: var(--accent-color);
+            background-color: rgba(255, 255, 255, 0.1);
         }
-        
-        nav ul li a::after {
+
+        /* 메인 컨텐츠 */
+        main {
+            margin-top: 80px;
+            padding: 2rem;
+        }
+
+        section {
+            padding: 3rem 0;
+            border-bottom: 1px solid #eee;
+        }
+
+        section:last-child {
+            border-bottom: none;
+        }
+
+        .section-title {
+            font-size: 2rem;
+            margin-bottom: 1.5rem;
+            color: var(--primary-color);
+            position: relative;
+            padding-bottom: 0.5rem;
+        }
+
+        .section-title::after {
             content: '';
             position: absolute;
             bottom: 0;
             left: 0;
-            width: 0;
-            height: 2px;
-            background-color: #3498db;
-            transition: width 0.3s;
+            width: 60px;
+            height: 4px;
+            background-color: var(--accent-color);
+            border-radius: 2px;
         }
-        
-        nav ul li a:hover::after {
-            width: 100%;
+
+        .section-description {
+            font-size: 1.1rem;
+            margin-bottom: 2rem;
+            color: var(--gray-color);
         }
-        
-        /* 강화 계산기 섹션 */
-        #calculator {
-            background-color: #fff;
-            padding-top: 100px;
-        }
-        
+
+        /* 강화 계산기 스타일 */
         .calculator-container {
-            background-color: #ecf0f1;
-            padding: 30px;
-            border-radius: 10px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-        }
-        
-        .input-group {
-            margin-bottom: 20px;
-        }
-        
-        .input-group label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: bold;
-            color: #2c3e50;
-        }
-        
-        .input-group select, 
-        .input-group input {
-            width: 100%;
-            padding: 10px;
-            border: 1px solid #bdc3c7;
-            border-radius: 5px;
-            font-size: 1rem;
-        }
-        
-        .tooltip {
-            position: relative;
-            display: inline-block;
-            margin-left: 10px;
-            cursor: pointer;
-        }
-        
-        .tooltip .tooltiptext {
-            visibility: hidden;
-            width: 200px;
-            background-color: #555;
-            color: #fff;
-            text-align: center;
-            border-radius: 6px;
-            padding: 5px;
-            position: absolute;
-            z-index: 1;
-            bottom: 125%;
-            left: 50%;
-            transform: translateX(-50%);
-            opacity: 0;
-            transition: opacity 0.3s;
-            font-size: 0.9rem;
-        }
-        
-        .tooltip:hover .tooltiptext {
-            visibility: visible;
-            opacity: 1;
-        }
-        
-        .btn {
-            background-color: #3498db;
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 1rem;
-            transition: background-color 0.3s;
-        }
-        
-        .btn:hover {
-            background-color: #2980b9;
-        }
-        
-        .result-container {
-            margin-top: 30px;
-            background-color: #fff;
-            padding: 20px;
-            border-radius: 5px;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-        }
-        
-        .result-item {
-            margin-bottom: 10px;
             display: flex;
-            justify-content: space-between;
-        }
-        
-        .result-item strong {
-            color: #2c3e50;
-        }
-        
-        /* 패치노트 섹션 */
-        #patch-notes {
-            background-color: #f9f9f9;
-        }
-        
-        .filter-tabs {
-            display: flex;
-            justify-content: center;
-            margin-bottom: 30px;
+            gap: 2rem;
             flex-wrap: wrap;
         }
-        
-        .filter-tab {
-            padding: 8px 15px;
-            margin: 0 5px;
-            background-color: #ecf0f1;
+
+        .calculator-inputs {
+            flex: 1;
+            min-width: 300px;
+            background-color: white;
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .calculator-results {
+            flex: 1;
+            min-width: 300px;
+            background-color: white;
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: var(--dark-color);
+        }
+
+        select, input {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 1rem;
+            transition: border-color 0.3s;
+        }
+
+        select:focus, input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+        }
+
+        button {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            font-size: 1rem;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: var(--secondary-color);
+        }
+
+        .result-item {
+            margin-bottom: 1rem;
+            padding: 1rem;
+            background-color: #f8f9fa;
+            border-radius: 4px;
+        }
+
+        .result-item h3 {
+            font-size: 1.1rem;
+            margin-bottom: 0.5rem;
+            color: var(--dark-color);
+        }
+
+        .result-value {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: var(--primary-color);
+        }
+
+        .material-list {
+            margin-top: 1rem;
+        }
+
+        .material-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.5rem 0;
+            border-bottom: 1px solid #eee;
+        }
+
+        /* 패치노트 스타일 */
+        .patch-filter {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .filter-btn {
+            background-color: white;
+            color: var(--gray-color);
+            border: 1px solid #ddd;
+            padding: 0.5rem 1rem;
             border-radius: 20px;
             cursor: pointer;
             transition: all 0.3s;
         }
-        
-        .filter-tab.active {
-            background-color: #3498db;
+
+        .filter-btn.active {
+            background-color: var(--primary-color);
             color: white;
+            border-color: var(--primary-color);
         }
-        
-        .patch-cards {
+
+        .patch-list {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 20px;
+            gap: 1.5rem;
         }
-        
+
         .patch-card {
-            background-color: #fff;
-            border-radius: 10px;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
             overflow: hidden;
-            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
             transition: transform 0.3s;
         }
-        
+
         .patch-card:hover {
             transform: translateY(-5px);
         }
-        
+
         .patch-header {
-            padding: 15px;
-            background-color: #2c3e50;
-            color: white;
+            padding: 1.5rem;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
-        
+
         .patch-title {
             font-size: 1.3rem;
-            margin-bottom: 5px;
-        }
-        
-        .patch-date {
-            font-size: 0.9rem;
-            opacity: 0.8;
-        }
-        
-        .patch-summary {
-            padding: 15px;
-        }
-        
-        .patch-more {
-            display: block;
-            text-align: center;
-            padding: 10px;
-            background-color: #ecf0f1;
-            color: #3498db;
             font-weight: bold;
-            cursor: pointer;
+            color: var(--dark-color);
         }
-        
+
+        .patch-date {
+            color: var(--gray-color);
+            font-size: 0.9rem;
+        }
+
+        .patch-summary {
+            padding: 0 1.5rem 1.5rem;
+            color: var(--gray-color);
+        }
+
         .patch-details {
-            padding: 0 15px;
-            max-height: 0;
-            overflow: hidden;
-            transition: max-height 0.3s, padding 0.3s;
+            padding: 0 1.5rem 1.5rem;
+            display: none;
         }
-        
+
         .patch-details.show {
-            padding: 15px;
-            max-height: 1000px;
+            display: block;
         }
-        
-        /* 캐릭터 정보 섹션 */
-        #character-info {
-            background-color: #fff;
+
+        .view-more {
+            color: var(--primary-color);
+            font-weight: 500;
+            cursor: pointer;
+            display: inline-block;
+            margin-top: 1rem;
         }
-        
-        .character-cards {
+
+        /* 캐릭터 정보 스타일 */
+        .character-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-            gap: 25px;
+            gap: 1.5rem;
         }
-        
+
         .character-card {
-            background-color: #fff;
-            border-radius: 10px;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
             overflow: hidden;
-            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
             transition: transform 0.3s;
-            position: relative;
         }
-        
+
         .character-card:hover {
             transform: translateY(-5px);
         }
-        
+
         .character-thumbnail {
-            width: 100%;
             height: 200px;
-            object-fit: cover;
+            background-color: #eee;
+            background-size: cover;
+            background-position: center;
         }
-        
+
         .character-info {
-            padding: 15px;
+            padding: 1.5rem;
         }
-        
+
         .character-name {
             font-size: 1.2rem;
-            margin-bottom: 5px;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+            color: var(--dark-color);
         }
-        
+
         .character-meta {
             display: flex;
-            justify-content: space-between;
-            margin-bottom: 10px;
+            gap: 1rem;
+            margin-bottom: 1rem;
+            color: var(--gray-color);
             font-size: 0.9rem;
-            color: #7f8c8d;
         }
-        
-        .character-buttons {
+
+        .character-actions {
             display: flex;
-            justify-content: space-between;
+            gap: 0.5rem;
         }
-        
-        .character-buttons button {
+
+        .action-btn {
             flex: 1;
-            margin: 0 5px;
-            padding: 8px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: background-color 0.3s;
+            text-align: center;
+            padding: 0.5rem;
+            font-size: 0.9rem;
         }
-        
+
         .story-btn {
-            background-color: #3498db;
-            color: white;
+            background-color: var(--primary-color);
         }
-        
-        .story-btn:hover {
-            background-color: #2980b9;
-        }
-        
+
         .detail-btn {
-            background-color: #2c3e50;
-            color: white;
+            background-color: var(--success-color);
         }
-        
-        .detail-btn:hover {
-            background-color: #1a252f;
-        }
-        
-        /* 캐릭터 상세 팝업 */
-        .character-popup {
+
+        /* 모달 스타일 */
+        .modal {
+            display: none;
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background-color: rgba(0, 0, 0, 0.8);
-            display: flex;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 2000;
             justify-content: center;
             align-items: center;
-            z-index: 2000;
-            opacity: 0;
-            visibility: hidden;
-            transition: opacity 0.3s, visibility 0.3s;
         }
-        
-        .character-popup.show {
-            opacity: 1;
-            visibility: visible;
+
+        .modal.show {
+            display: flex;
         }
-        
-        .popup-content {
-            background-color: #fff;
+
+        .modal-content {
+            background-color: white;
+            border-radius: 8px;
             width: 90%;
             max-width: 800px;
             max-height: 90vh;
             overflow-y: auto;
-            border-radius: 10px;
-            position: relative;
-            padding: 30px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            animation: modalFadeIn 0.3s;
         }
-        
-        .close-popup {
-            position: absolute;
-            top: 15px;
-            right: 15px;
+
+        @keyframes modalFadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .modal-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-title {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--dark-color);
+        }
+
+        .close-modal {
+            background: none;
+            border: none;
             font-size: 1.5rem;
             cursor: pointer;
-            color: #7f8c8d;
+            color: var(--gray-color);
         }
-        
-        .popup-header {
+
+        .modal-body {
+            padding: 1.5rem;
+        }
+
+        .character-detail {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 2rem;
+        }
+
+        .character-image {
+            background-color: #eee;
+            height: 300px;
+            background-size: cover;
+            background-position: center;
+            border-radius: 4px;
+        }
+
+        .character-details {
             display: flex;
-            margin-bottom: 20px;
+            flex-direction: column;
+            gap: 1rem;
         }
-        
-        .popup-thumbnail {
-            width: 150px;
-            height: 150px;
-            object-fit: cover;
-            border-radius: 10px;
-            margin-right: 20px;
+
+        .detail-section {
+            margin-bottom: 1.5rem;
         }
-        
-        .popup-meta {
-            flex: 1;
+
+        .detail-section h3 {
+            font-size: 1.2rem;
+            margin-bottom: 0.5rem;
+            color: var(--dark-color);
+            border-bottom: 2px solid var(--primary-color);
+            padding-bottom: 0.3rem;
         }
-        
-        .popup-name {
-            font-size: 1.8rem;
-            margin-bottom: 10px;
-        }
-        
-        .popup-details {
-            margin-bottom: 20px;
-        }
-        
-        .popup-section {
-            margin-bottom: 20px;
-        }
-        
-        .popup-section h3 {
-            margin-bottom: 10px;
-            color: #2c3e50;
-        }
-        
-        /* 관리자 로그인 모달 */
-        .admin-modal {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.8);
-            display: none;
-            justify-content: center;
-            align-items: center;
-            z-index: 2000;
-        }
-        
-        .login-form {
-            background-color: #fff;
-            padding: 30px;
-            border-radius: 10px;
-            width: 100%;
-            max-width: 400px;
-        }
-        
-        .login-form h2 {
-            margin-bottom: 20px;
-            text-align: center;
-        }
-        
-        .login-form input {
-            width: 100%;
-            padding: 12px;
-            margin-bottom: 15px;
-            border: 1px solid #bdc3c7;
-            border-radius: 5px;
-            font-size: 1rem;
-        }
-        
-        .login-form button {
-            width: 100%;
-            padding: 12px;
-            background-color: #3498db;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            font-size: 1rem;
-            cursor: pointer;
-            transition: background-color 0.3s;
-        }
-        
-        .login-form button:hover {
-            background-color: #2980b9;
-        }
-        
-        /* 관리자 패널 */
+
+        /* 관리자 패널 스타일 */
         .admin-panel {
             position: fixed;
             bottom: 20px;
             right: 20px;
-            background-color: #2c3e50;
+            z-index: 1000;
+        }
+
+        .admin-btn {
+            background-color: var(--danger-color);
             color: white;
+            border: none;
+            width: 50px;
+            height: 50px;
             border-radius: 50%;
-            width: 60px;
-            height: 60px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
+            font-size: 1.2rem;
             cursor: pointer;
-            z-index: 1000;
-            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
-        }
-        
-        .admin-menu {
-            position: fixed;
-            bottom: 90px;
-            right: 20px;
-            background-color: #fff;
-            border-radius: 10px;
-            box-shadow: 0 3px 15px rgba(0, 0, 0, 0.2);
-            padding: 15px;
-            z-index: 1000;
-            display: none;
-            flex-direction: column;
-            min-width: 200px;
-        }
-        
-        .admin-menu.show {
-            display: flex;
-        }
-        
-        .admin-menu button {
-            padding: 10px;
-            margin: 5px 0;
-            background-color: #3498db;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: background-color 0.3s;
-        }
-        
-        .admin-menu button:hover {
-            background-color: #2980b9;
-        }
-        
-        .admin-menu button.logout {
-            background-color: #e74c3c;
-        }
-        
-        .admin-menu button.logout:hover {
-            background-color: #c0392b;
-        }
-        
-        /* 관리자 편집 모드 */
-        .edit-mode {
-            outline: 2px dashed #3498db;
-            position: relative;
-            min-height: 50px;
-        }
-        
-        .edit-controls {
-            position: absolute;
-            top: -25px;
-            right: 0;
-            background-color: #3498db;
-            color: white;
-            padding: 5px;
-            border-radius: 5px;
-            display: flex;
-            z-index: 100;
-        }
-        
-        .edit-controls button {
-            background-color: transparent;
-            border: none;
-            color: white;
-            cursor: pointer;
-            margin: 0 5px;
-        }
-        
-        /* 장비 도감 섹션 */
-        #equipment-dictionary {
-            background-color: #f9f9f9;
-            display: none; /* 기본적으로 숨김 */
-        }
-        
-        .equipment-filter {
-            display: flex;
-            justify-content: center;
-            margin-bottom: 20px;
-            flex-wrap: wrap;
-        }
-        
-        .equipment-filter button {
-            padding: 8px 15px;
-            margin: 0 5px;
-            background-color: #ecf0f1;
-            border: none;
-            border-radius: 20px;
-            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
             transition: all 0.3s;
         }
-        
-        .equipment-filter button.active {
-            background-color: #3498db;
-            color: white;
+
+        .admin-btn:hover {
+            transform: scale(1.1);
         }
-        
-        .equipment-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-            gap: 20px;
+
+        .login-modal {
+            display: none;
         }
-        
-        .equipment-card {
-            background-color: #fff;
-            border-radius: 10px;
-            overflow: hidden;
-            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
-            transition: transform 0.3s;
+
+        .login-modal.show {
+            display: flex;
         }
-        
-        .equipment-card:hover {
-            transform: translateY(-5px);
-        }
-        
-        .equipment-image {
+
+        .login-form {
             width: 100%;
-            height: 150px;
-            object-fit: cover;
+            max-width: 400px;
+            padding: 2rem;
+            background-color: white;
+            border-radius: 8px;
         }
-        
-        .equipment-info {
-            padding: 15px;
+
+        .login-form h2 {
+            margin-bottom: 1.5rem;
+            text-align: center;
+            color: var(--dark-color);
         }
-        
-        .equipment-name {
-            font-size: 1.1rem;
-            margin-bottom: 5px;
+
+        .form-input {
+            margin-bottom: 1.5rem;
         }
-        
-        .equipment-type {
-            font-size: 0.9rem;
-            color: #7f8c8d;
-            margin-bottom: 10px;
+
+        .form-input label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
         }
-        
-        .equipment-stats {
-            font-size: 0.9rem;
+
+        .form-input input {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 1rem;
         }
-        
+
+        .login-actions {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 2rem;
+        }
+
+        .admin-tools {
+            display: none;
+            background-color: white;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-top: 1rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .admin-tools.show {
+            display: block;
+        }
+
+        .tool-btn {
+            display: block;
+            width: 100%;
+            margin-bottom: 0.5rem;
+            padding: 0.75rem;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            text-align: left;
+        }
+
+        .tool-btn:hover {
+            background-color: var(--secondary-color);
+        }
+
+        .edit-section {
+            margin-top: 1rem;
+            padding: 1rem;
+            background-color: #f8f9fa;
+            border-radius: 4px;
+            display: none;
+        }
+
+        .edit-section.show {
+            display: block;
+        }
+
         /* 반응형 디자인 */
         @media (max-width: 768px) {
-            nav ul li {
-                margin-left: 15px;
-            }
-            
-            .patch-cards, .character-cards {
-                grid-template-columns: 1fr;
-            }
-            
-            .popup-header {
+            .calculator-container {
                 flex-direction: column;
             }
-            
-            .popup-thumbnail {
-                margin-right: 0;
-                margin-bottom: 15px;
+
+            .character-detail {
+                grid-template-columns: 1fr;
             }
+
+            nav ul {
+                display: none;
+            }
+
+            .mobile-menu-btn {
+                display: block;
+            }
+        }
+
+        /* 드래그 앤 드롭 스타일 */
+        .draggable {
+            cursor: move;
+            user-select: none;
+        }
+
+        .drag-over {
+            border: 2px dashed var(--primary-color);
+        }
+
+        /* 경험치 테이블 스타일 */
+        .exp-table {
+            display: none;
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+        }
+
+        .exp-table.show {
+            display: table;
+        }
+
+        .exp-table th, .exp-table td {
+            border: 1px solid #ddd;
+            padding: 0.5rem;
+            text-align: center;
+        }
+
+        .exp-table th {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .exp-table tr:nth-child(even) {
+            background-color: #f2f2f2;
         }
     </style>
 </head>
 <body>
-    <!-- 상단 고정 헤더 -->
+    <!-- 상단 헤더 -->
     <header>
-        <div class="container header-container">
-            <div class="logo">
-                <img src="https://via.placeholder.com/40" alt="로고">
-                <span>레조넌스 정보</span>
-            </div>
-            <nav>
-                <ul>
-                    <li><a href="#calculator">강화 계산기</a></li>
-                    <li><a href="#patch-notes">패치노트</a></li>
-                    <li><a href="#character-info">캐릭터 정보</a></li>
-                    <li id="equipment-tab" style="display: none;"><a href="#equipment-dictionary">장비 도감</a></li>
-                </ul>
-            </nav>
-        </div>
+        <div class="logo">레조넌스</div>
+        <nav>
+            <ul>
+                <li><a href="#patch-notes">패치노트</a></li>
+                <li><a href="#calculator">강화 계산기</a></li>
+                <li><a href="#characters">캐릭터 정보</a></li>
+            </ul>
+        </nav>
     </header>
 
-    <!-- 강화 계산기 섹션 -->
-    <section id="calculator">
-        <div class="container">
-            <h2>강화 계산기</h2>
-            <p class="description">장비를 원하는 단계까지 강화할 때 필요한 경험치 및 재료 소비량을 계산해보세요!</p>
+    <!-- 메인 컨텐츠 -->
+    <main>
+        <!-- 패치노트 섹션 -->
+        <section id="patch-notes">
+            <h2 class="section-title">패치노트</h2>
+            <p class="section-description">최신 업데이트 내용과 변경사항을 빠르게 확인해보세요.</p>
+            
+            <div class="patch-filter">
+                <button class="filter-btn active" data-filter="all">전체</button>
+                <button class="filter-btn" data-filter="character">캐릭터 업데이트</button>
+                <button class="filter-btn" data-filter="balance">밸런스 조정</button>
+                <button class="filter-btn" data-filter="resource">리소스 패치</button>
+                <button class="filter-btn" data-filter="event">이벤트</button>
+            </div>
+            
+            <div class="patch-list" id="patch-list">
+                <!-- 패치노트 카드들이 여기에 동적으로 추가됩니다 -->
+            </div>
+        </section>
+
+        <!-- 강화 계산기 섹션 -->
+        <section id="calculator">
+            <h2 class="section-title">강화 계산기</h2>
+            <p class="section-description">장비를 원하는 단계까지 강화할 때 필요한 경험치 및 재료 소비량을 계산해보세요!</p>
             
             <div class="calculator-container">
-                <div class="input-group">
-                    <label for="equipment-grade">장비 등급 선택</label>
-                    <select id="equipment-grade">
+                <div class="calculator-inputs">
+                    <div class="form-group">
+                        <label for="equipment-grade">장비 등급</label>
+                        <select id="equipment-grade">
+                            <option value="UR">UR</option>
+                            <option value="SSR">SSR</option>
+                            <option value="SR">SR</option>
+                            <option value="R">R</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="equipment-type">장비 유형</label>
+                        <select id="equipment-type">
+                            <option value="weapon">무기/방어구</option>
+                            <option value="accessory">악세서리</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="current-level">현재 강화 레벨</label>
+                        <input type="number" id="current-level" min="1" max="70" value="1">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="target-level">목표 강화 레벨</label>
+                        <input type="number" id="target-level" min="1" max="70" value="10">
+                    </div>
+                    
+                    <button id="calculate-btn">계산하기</button>
+                    <button id="show-exp-table" style="margin-top: 1rem; background-color: var(--gray-color);">등급별 경험치 표 보기</button>
+                </div>
+                
+                <div class="calculator-results">
+                    <h3>계산 결과</h3>
+                    <div class="result-item">
+                        <h3>총 필요 경험치</h3>
+                        <div class="result-value" id="total-exp">0</div>
+                    </div>
+                    
+                    <div class="result-item">
+                        <h3>소모 골드</h3>
+                        <div class="result-value" id="total-gold">0</div>
+                    </div>
+                    
+                    <div class="result-item">
+                        <h3>필요한 재료 수량</h3>
+                        <div class="material-list">
+                            <div class="material-item">
+                                <span>성운상 물질(8Ti)</span>
+                                <span id="material-8ti">0</span>
+                            </div>
+                            <div class="material-item">
+                                <span>성운상 물질(4Ti)</span>
+                                <span id="material-4ti">0</span>
+                            </div>
+                            <div class="material-item">
+                                <span>성운상 물질(2Ti)</span>
+                                <span id="material-2ti">0</span>
+                            </div>
+                            <div class="material-item">
+                                <span>성운상 물질(1Ti)</span>
+                                <span id="material-1ti">0</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 경험치 테이블 -->
+            <table class="exp-table" id="exp-table">
+                <thead>
+                    <tr>
+                        <th>레벨</th>
+                        <th>UR 무기/방어구</th>
+                        <th>UR 악세서리</th>
+                        <th>SSR 무기/방어구</th>
+                        <th>SSR 악세서리</th>
+                        <th>SR 무기/방어구</th>
+                        <th>SR 악세서리</th>
+                        <th>R 무기/방어구</th>
+                        <th>R 악세서리</th>
+                    </tr>
+                </thead>
+                <tbody id="exp-table-body">
+                    <!-- 테이블 내용이 여기에 동적으로 추가됩니다 -->
+                </tbody>
+            </table>
+        </section>
+
+        <!-- 캐릭터 정보 섹션 -->
+        <section id="characters">
+            <h2 class="section-title">캐릭터 정보</h2>
+            <p class="section-description">레조넌스의 다양한 캐릭터를 만나보세요.</p>
+            
+            <div class="character-grid" id="character-grid">
+                <!-- 캐릭터 카드들이 여기에 동적으로 추가됩니다 -->
+            </div>
+        </section>
+    </main>
+
+    <!-- 캐릭터 상세 모달 -->
+    <div class="modal" id="character-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title" id="modal-character-name">�릭터 이름</h3>
+                <button class="close-modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="character-detail">
+                    <div class="character-image" id="modal-character-image"></div>
+                    <div class="character-details">
+                        <div class="detail-section">
+                            <h3>기본 정보</h3>
+                            <p><strong>등급:</strong> <span id="modal-character-grade"></span></p>
+                            <p><strong>속성:</strong> <span id="modal-character-attribute"></span></p>
+                            <p><strong>포지션:</strong> <span id="modal-character-position"></span></p>
+                        </div>
+                        
+                        <div class="detail-section">
+                            <h3>스토리</h3>
+                            <p id="modal-character-story"></p>
+                        </div>
+                        
+                        <div class="detail-section">
+                            <h3>전투 스타일</h3>
+                            <p id="modal-character-combat"></p>
+                        </div>
+                        
+                        <div class="detail-section">
+                            <h3>추천 장비</h3>
+                            <p id="modal-character-equipment"></p>
+                        </div>
+                        
+                        <div class="detail-section">
+                            <h3>스킬 정보</h3>
+                            <p id="modal-character-skills"></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 관리자 로그인 모달 -->
+    <div class="modal login-modal" id="login-modal">
+        <div class="login-form">
+            <h2>관리자 로그인</h2>
+            <div class="form-input">
+                <label for="admin-username">아이디</label>
+                <input type="text" id="admin-username" placeholder="아이디를 입력하세요">
+            </div>
+            <div class="form-input">
+                <label for="admin-password">비밀번호</label>
+                <input type="password" id="admin-password" placeholder="비밀번호를 입력하세요">
+            </div>
+            <div class="login-actions">
+                <button id="login-cancel">취소</button>
+                <button id="login-submit">로그인</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 관리자 패널 -->
+    <div class="admin-panel">
+        <button class="admin-btn" id="admin-btn">⚙️</button>
+        <div class="admin-tools" id="admin-tools">
+            <button class="tool-btn" id="edit-patch-btn">패치노트 수정</button>
+            <button class="tool-btn" id="edit-character-btn">캐릭터 정보 수정</button>
+            <button class="tool-btn" id="add-feature-btn">새로운 기능 추가</button>
+            <button class="tool-btn" id="save-data-btn">정보 저장하기</button>
+            <button class="tool-btn" id="export-data-btn">정보 내보내기</button>
+            <button class="tool-btn" id="logout-btn">로그아웃</button>
+            
+            <!-- 패치노트 수정 섹션 -->
+            <div class="edit-section" id="edit-patch-section">
+                <h3>패치노트 수정</h3>
+                <div class="form-group">
+                    <label for="patch-title">제목</label>
+                    <input type="text" id="patch-title" placeholder="예: v1.4 업데이트">
+                </div>
+                <div class="form-group">
+                    <label for="patch-date">날짜</label>
+                    <input type="date" id="patch-date">
+                </div>
+                <div class="form-group">
+                    <label for="patch-type">유형</label>
+                    <select id="patch-type">
+                        <option value="character">캐릭터 업데이트</option>
+                        <option value="balance">밸런스 조정</option>
+                        <option value="resource">리소스 패치</option>
+                        <option value="event">이벤트</option>
+                        <option value="other">기타</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="patch-summary">요약</label>
+                    <textarea id="patch-summary" rows="3" placeholder="간략한 요약을 입력하세요"></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="patch-details">상세 내용</label>
+                    <textarea id="patch-details" rows="5" placeholder="상세 내용을 입력하세요"></textarea>
+                </div>
+                <button id="add-patch-btn">패치 추가</button>
+                <button id="update-patch-btn" style="display: none;">패치 업데이트</button>
+                <button id="delete-patch-btn" style="background-color: var(--danger-color); display: none;">패치 삭제</button>
+            </div>
+            
+            <!-- 캐릭터 정보 수정 섹션 -->
+            <div class="edit-section" id="edit-character-section">
+                <h3>캐릭터 정보 수정</h3>
+                <div class="form-group">
+                    <label for="character-name">이름</label>
+                    <input type="text" id="character-name" placeholder="�릭터 이름">
+                </div>
+                <div class="form-group">
+                    <label for="character-grade">등급</label>
+                    <select id="character-grade">
                         <option value="UR">UR</option>
                         <option value="SSR">SSR</option>
                         <option value="SR">SR</option>
                         <option value="R">R</option>
                     </select>
                 </div>
-                
-                <div class="input-group">
-                    <label for="equipment-type">장비 유형 선택</label>
-                    <select id="equipment-type">
-                        <option value="weapon">무기</option>
-                        <option value="armor">방어구</option>
-                        <option value="accessory">악세서리</option>
-                    </select>
+                <div class="form-group">
+                    <label for="character-attribute">속성</label>
+                    <input type="text" id="character-attribute" placeholder="예: 불, 물, 바람 등">
                 </div>
-                
-                <div class="input-group">
-                    <label for="current-level">현재 강화 레벨</label>
-                    <input type="number" id="current-level" min="0" max="20" value="0">
+                <div class="form-group">
+                    <label for="character-position">포지션</label>
+                    <input type="text" id="character-position" placeholder="예: 딜러, 서포터, 탱커 등">
                 </div>
-                
-                <div class="input-group">
-                    <label for="target-level">목표 강화 레벨</label>
-                    <input type="number" id="target-level" min="1" max="20" value="10">
+                <div class="form-group">
+                    <label for="character-story">스토리</label>
+                    <textarea id="character-story" rows="3" placeholder="캐릭터 배경 스토리"></textarea>
                 </div>
-                
-                <button id="calculate-btn" class="btn">계산하기</button>
-                <button id="show-exp-table" class="btn">등급별 경험치 표 보기</button>
-                
-                <div class="result-container" id="result-container" style="display: none;">
-                    <h3>계산 결과</h3>
-                    <div class="result-item">
-                        <span>총 필요 경험치:</span>
-                        <strong id="total-exp">0</strong>
-                    </div>
-                    <div class="result-item">
-                        <span>소모 골드:</span>
-                        <strong id="total-gold">0</strong>
-                    </div>
-                    <div class="result-item">
-                        <span>8Ti 재료:</span>
-                        <strong id="material-8">0</strong>
-                    </div>
-                    <div class="result-item">
-                        <span>4Ti 재료:</span>
-                        <strong id="material-4">0</strong>
-                    </div>
-                    <div class="result-item">
-                        <span>2Ti 재료:</span>
-                        <strong id="material-2">0</strong>
-                    </div>
-                    <div class="result-item">
-                        <span>1Ti 재료:</span>
-                        <strong id="material-1">0</strong>
-                    </div>
+                <div class="form-group">
+                    <label for="character-combat">전투 스타일</label>
+                    <textarea id="character-combat" rows="3" placeholder="전투 스타일 설명"></textarea>
                 </div>
+                <div class="form-group">
+                    <label for="character-equipment">추천 장비</label>
+                    <textarea id="character-equipment" rows="3" placeholder="추천 장비 설명"></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="character-skills">스킬 정보</label>
+                    <textarea id="character-skills" rows="3" placeholder="스킬 정보 설명"></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="character-image-url">이미지 URL</label>
+                    <input type="text" id="character-image-url" placeholder="썸네일 이미지 URL">
+                </div>
+                <button id="add-character-btn">캐릭터 추가</button>
+                <button id="update-character-btn" style="display: none;">캐릭터 업데이트</button>
+                <button id="delete-character-btn" style="background-color: var(--danger-color); display: none;">캐릭터 삭제</button>
+            </div>
+            
+            <!-- 새로운 기능 추가 섹션 -->
+            <div class="edit-section" id="add-feature-section">
+                <h3>새로운 기능 추가</h3>
+                <div class="form-group">
+                    <label for="feature-name">기능 이름</label>
+                    <input type="text" id="feature-name" placeholder="예: 장비 도감">
+                </div>
+                <div class="form-group">
+                    <label for="feature-description">기능 설명</label>
+                    <textarea id="feature-description" rows="3" placeholder="기능에 대한 설명을 입력하세요"></textarea>
+                </div>
+                <button id="add-feature-submit">기능 추가</button>
             </div>
         </div>
-    </section>
-
-    <!-- 패치노트 섹션 -->
-    <section id="patch-notes">
-        <div class="container">
-            <h2>패치노트</h2>
-            <p class="description">최신 업데이트 내용과 변경사항을 빠르게 확인해보세요.</p>
-            
-            <div class="filter-tabs">
-                <div class="filter-tab active" data-filter="all">전체</div>
-                <div class="filter-tab" data-filter="character">캐릭터 업데이트</div>
-                <div class="filter-tab" data-filter="balance">밸런스 조정</div>
-                <div class="filter-tab" data-filter="resource">리소스 패치</div>
-                <div class="filter-tab" data-filter="event">이벤트</div>
-            </div>
-            
-            <div class="patch-cards" id="patch-cards-container">
-                <!-- 패치노트 카드들이 여기에 동적으로 추가됩니다 -->
-                <div class="patch-card" data-category="character">
-                    <div class="patch-header">
-                        <div class="patch-title">v1.4 업데이트</div>
-                        <div class="patch-date">2023.11.15</div>
-                    </div>
-                    <div class="patch-summary">
-                        새로운 캐릭터 '루나' 추가 및 밸런스 조정
-                    </div>
-                    <div class="patch-more">자세히 보기</div>
-                    <div class="patch-details">
-                        <h4>새로운 캐릭터</h4>
-                        <p>- 5성 캐릭터 '루나' 추가 (속성: 물, 포지션: 서포터)</p>
-                        <h4>밸런스 조정</h4>
-                        <p>- 캐릭터 '아크' 스킬 데미지 10% 상향</p>
-                        <p>- 캐릭터 '리나' 궁극기 쿨타임 5초 증가</p>
-                        <h4>버그 수정</h4>
-                        <p>- 특정 조건에서 게임이 튕기는 현상 수정</p>
-                    </div>
-                </div>
-                
-                <div class="patch-card" data-category="balance">
-                    <div class="patch-header">
-                        <div class="patch-title">v1.3.5 핫픽스</div>
-                        <div class="patch-date">2023.10.28</div>
-                    </div>
-                    <div class="patch-summary">
-                        주요 밸런스 조정 및 버그 수정
-                    </div>
-                    <div class="patch-more">자세히 보기</div>
-                    <div class="patch-details">
-                        <h4>밸런스 조정</h4>
-                        <p>- 모든 무기 공격력 5% 상향</p>
-                        <p>- 방어구 방어력 계산식 변경</p>
-                        <h4>버그 수정</h4>
-                        <p>- 강화 성공률이 표시보다 낮게 적용되던 문제 수정</p>
-                        <p>- 특정 퀘스트 진행 불가 현상 수정</p>
-                    </div>
-                </div>
-                
-                <div class="patch-card" data-category="event">
-                    <div class="patch-header">
-                        <div class="patch-title">할로윈 이벤트</div>
-                        <div class="patch-date">2023.10.20</div>
-                    </div>
-                    <div class="patch-summary">
-                        할로윈 한정 이벤트 및 아이템 추가
-                    </div>
-                    <div class="patch-more">자세히 보기</div>
-                    <div class="patch-details">
-                        <h4>이벤트 내용</h4>
-                        <p>- 할로윈 한정 던전 추가 (10/20 ~ 11/3)</p>
-                        <p>- 특별 보상: 할로윈 코스튬, 펫, 탈것</p>
-                        <h4>새로운 아이템</h4>
-                        <p>- 할로윈 한정 장비 5종 추가</p>
-                        <p>- 특별 소비 아이템 3종 추가</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- 캐릭터 정보 섹션 -->
-    <section id="character-info">
-        <div class="container">
-            <h2>캐릭터 정보</h2>
-            <p class="description">레조넌스의 다양한 캐릭터를 만나보세요.</p>
-            
-            <div class="character-cards" id="character-cards-container">
-                <!-- 캐릭터 카드들이 여기에 동적으로 추가됩니다 -->
-                <div class="character-card">
-                    <img src="https://via.placeholder.com/300x200?text=Character+1" alt="캐릭터 이미지" class="character-thumbnail">
-                    <div class="character-info">
-                        <div class="character-name">아크</div>
-                        <div class="character-meta">
-                            <span>UR</span>
-                            <span>불</span>
-                            <span>딜러</span>
-                        </div>
-                        <div class="character-buttons">
-                            <button class="story-btn">스토리 보기</button>
-                            <button class="detail-btn">상세 정보</button>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="character-card">
-                    <img src="https://via.placeholder.com/300x200?text=Character+2" alt="캐릭터 이미지" class="character-thumbnail">
-                    <div class="character-info">
-                        <div class="character-name">리나</div>
-                        <div class="character-meta">
-                            <span>SSR</span>
-                            <span>물</span>
-                            <span>힐러</span>
-                        </div>
-                        <div class="character-buttons">
-                            <button class="story-btn">스토리 보기</button>
-                            <button class="detail-btn">상세 정보</button>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="character-card">
-                    <img src="https://via.placeholder.com/300x200?text=Character+3" alt="캐릭터 이미지" class="character-thumbnail">
-                    <div class="character-info">
-                        <div class="character-name">제이드</div>
-                        <div class="character-meta">
-                            <span>SR</span>
-                            <span>바람</span>
-                            <span>서포터</span>
-                        </div>
-                        <div class="character-buttons">
-                            <button class="story-btn">스토리 보기</button>
-                            <button class="detail-btn">상세 정보</button>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="character-card">
-                    <img src="https://via.placeholder.com/300x200?text=Character+4" alt="캐릭터 이미지" class="character-thumbnail">
-                    <div class="character-info">
-                        <div class="character-name">루나</div>
-                        <div class="character-meta">
-                            <span>UR</span>
-                            <span>빛</span>
-                            <span>딜러</span>
-                        </div>
-                        <div class="character-buttons">
-                            <button class="story-btn">스토리 보기</button>
-                            <button class="detail-btn">상세 정보</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- 장비 도감 섹션 (기본적으로 숨김) -->
-    <section id="equipment-dictionary">
-        <div class="container">
-            <h2>장비 도감</h2>
-            <p class="description">게임 내 모든 장비 정보를 확인해보세요.</p>
-            
-            <div class="equipment-filter">
-                <button class="active" data-type="all">전체</button>
-                <button data-type="weapon">무기</button>
-                <button data-type="armor">방어구</button>
-                <button data-type="accessory">악세서리</button>
-            </div>
-            
-            <div class="equipment-grid" id="equipment-container">
-                <!-- 장비 카드들이 여기에 동적으로 추가됩니다 -->
-                <div class="equipment-card" data-type="weapon">
-                    <img src="https://via.placeholder.com/200x150?text=Weapon+1" alt="장비 이미지" class="equipment-image">
-                    <div class="equipment-info">
-                        <div class="equipment-name">태양의 검</div>
-                        <div class="equipment-type">UR / 무기</div>
-                        <div class="equipment-stats">
-                            공격력: 1200<br>
-                            치명타: 15%<br>
-                            특수 효과: 불 속성 데미지 20% 증가
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="equipment-card" data-type="armor">
-                    <img src="https://via.placeholder.com/200x150?text=Armor+1" alt="장비 이미지" class="equipment-image">
-                    <div class="equipment-info">
-                        <div class="equipment-name">달의 갑옷</div>
-                        <div class="equipment-type">SSR / 방어구</div>
-                        <div class="equipment-stats">
-                            방어력: 850<br>
-                            HP: 3000<br>
-                            특수 효과: 물 속성 저항 30% 증가
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="equipment-card" data-type="accessory">
-                    <img src="https://via.placeholder.com/200x150?text=Accessory+1" alt="장비 이미지" class="equipment-image">
-                    <div class="equipment-info">
-                        <div class="equipment-name">별의 반지</div>
-                        <div class="equipment-type">UR / 악세서리</div>
-                        <div class="equipment-stats">
-                            모든 능력치: 10% 증가<br>
-                            특수 효과: 스킬 쿨타임 15% 감소
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- 캐릭터 상세 팝업 -->
-    <div class="character-popup" id="character-popup">
-        <div class="popup-content">
-            <span class="close-popup">&times;</span>
-            <div class="popup-header">
-                <img src="https://via.placeholder.com/150x150?text=Character" alt="캐릭터 이미지" class="popup-thumbnail">
-                <div class="popup-meta">
-                    <div class="popup-name">아크</div>
-                    <div class="popup-details">
-                        <span>등급: UR</span> | 
-                        <span>속성: 불</span> | 
-                        <span>포지션: 딜러</span>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="popup-section">
-                <h3>스토리</h3>
-                <p>불의 정령과 계약을 맺은 전사. 어린 시절 마을이 몬스터에게 파괴된 후 복수를 위해 힘을 길렀다. 차갑고 무뚝뚝한 외모와 달리 약자를 보호하려는 강한 의지를 지니고 있다.</p>
-            </div>
-            
-            <div class="popup-section">
-                <h3>전투 스타일</h3>
-                <p>근접 공격 전문가로, 강력한 단일 대상 공격 기술을 보유. 불 속성 기술로 적을 태워 지속 피해를 입힐 수 있다. 궁극기 '화룡의 분노'는 광범위한 지역에 막대한 피해를 입힌다.</p>
-            </div>
-            
-            <div class="popup-section">
-                <h3>추천 장비</h3>
-                <p>- 무기: 태양의 검, 화염의 도끼<br>
-                - 방어구: 용사의 갑옷, 불사조의 망토<br>
-                - 악세서리: 용의 눈물, 불꽃의 반지</p>
-            </div>
-            
-            <div class="popup-section">
-                <h3>스킬 정보</h3>
-                <p>1. 화염 베기 - 기본 공격, 불 속성 추가 데미지<br>
-                2. 용아장 - 강력한 단일 대상 공격, 치명타 확률 증가<br>
-                3. 화염의 갑옷 - 일정 시간 방어력 증가 및 접촉한 적에게 피해<br>
-                4. 화룡의 분노 (궁극기) - 광범위 지역에 막대한 불 속성 피해</p>
-            </div>
-        </div>
-    </div>
-
-    <!-- 관리자 로그인 모달 -->
-    <div class="admin-modal" id="admin-login-modal">
-        <div class="login-form">
-            <h2>관리자 로그인</h2>
-            <input type="text" id="admin-id" placeholder="아이디">
-            <input type="password" id="admin-pw" placeholder="비밀번호">
-            <button id="login-btn">로그인</button>
-        </div>
-    </div>
-
-    <!-- 관리자 패널 -->
-    <div class="admin-panel" id="admin-panel">
-        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"></path>
-        </svg>
-    </div>
-
-    <div class="admin-menu" id="admin-menu">
-        <button id="login-admin-btn">관리자 로그인</button>
-    </div>
-
-    <div class="admin-menu" id="admin-loggedin-menu" style="display: none;">
-        <button id="edit-patch-btn">패치노트 수정</button>
-        <button id="edit-character-btn">캐릭터 정보 수정</button>
-        <button id="add-feature-btn">새로운 기능 추가</button>
-        <button id="logout-btn" class="logout">로그아웃</button>
     </div>
 
     <script>
-        // 전역 변수
-        let isAdmin = false;
-        let isEditMode = false;
-        let currentDraggedElement = null;
-        
-        // DOM 요소 가져오기
-        const adminPanel = document.getElementById('admin-panel');
-        const adminMenu = document.getElementById('admin-menu');
-        const adminLoggedinMenu = document.getElementById('admin-loggedin-menu');
-        const adminLoginModal = document.getElementById('admin-login-modal');
-        const loginBtn = document.getElementById('login-btn');
-        const loginAdminBtn = document.getElementById('login-admin-btn');
-        const logoutBtn = document.getElementById('logout-btn');
-        const editPatchBtn = document.getElementById('edit-patch-btn');
-        const editCharacterBtn = document.getElementById('edit-character-btn');
-        const addFeatureBtn = document.getElementById('add-feature-btn');
-        const equipmentTab = document.getElementById('equipment-tab');
-        const equipmentSection = document.getElementById('equipment-dictionary');
-        
-        // 강화 계산기 관련 요소
-        const calculateBtn = document.getElementById('calculate-btn');
-        const showExpTableBtn = document.getElementById('show-exp-table');
-        const resultContainer = document.getElementById('result-container');
-        
-        // 캐릭터 팝업 관련 요소
-        const characterPopup = document.getElementById('character-popup');
-        const closePopupBtn = document.querySelector('.close-popup');
-        const detailButtons = document.querySelectorAll('.detail-btn');
-        
-        // 패치노트 더보기 버튼
-        const patchMoreButtons = document.querySelectorAll('.patch-more');
-        
-        // 필터 탭
-        const filterTabs = document.querySelectorAll('.filter-tab');
-        const equipmentFilterBtns = document.querySelectorAll('.equipment-filter button');
-        
-        // 경험치 테이블 데이터 (예시)
-        const expTable = {
-            UR: [0, 100, 220, 360, 520, 700, 900, 1120, 1360, 1620, 1900, 2200, 2520, 2860, 3220, 3600, 4000, 4420, 4860, 5320, 5800],
-            SSR: [0, 80, 176, 288, 416, 560, 720, 896, 1088, 1296, 1520, 1760, 2016, 2288, 2576, 2880, 3200, 3536, 3888, 4256, 4640],
-            SR: [0, 60, 132, 216, 312, 420, 540, 672, 816, 972, 1140, 1320, 1512, 1716, 1932, 2160, 2400, 2652, 2916, 3192, 3480],
-            R: [0, 40, 88, 144, 208, 280, 360, 448, 544, 648, 760, 880, 1008, 1144, 1288, 1440, 1600, 1768, 1944, 2128, 2320]
+        // 데이터 저장소
+        const appData = {
+            patches: [
+                {
+                    id: 1,
+                    title: "v1.4 업데이트",
+                    date: "2023-11-15",
+                    type: "character",
+                    summary: "새로운 캐릭터 '레이븐' 추가 및 밸런스 조정",
+                    details: "- 새로운 UR 등급 캐릭터 '레이븐' 추가\n- 기존 캐릭터 밸런스 조정\n- 이벤트 던전 '어둠의 성소' 오픈\n- 다양한 버그 수정 및 최적화"
+                },
+                {
+                    id: 2,
+                    title: "v1.3.2 패치",
+                    date: "2023-10-28",
+                    type: "balance",
+                    summary: "전투 시스템 밸런스 조정",
+                    details: "- 특정 스킬의 데미지 계수 조정\n- PvP 매칭 시스템 개선\n- 아이템 드롭률 조정\n- UI 개선 및 사소한 버그 수정"
+                },
+                {
+                    id: 3,
+                    title: "할로윈 이벤트",
+                    date: "2023-10-20",
+                    type: "event",
+                    summary: "할로윈 한정 이벤트 시작!",
+                    details: "- 특별 할로윈 던전 오픈\n- 한정 코스튬 및 아이템 판매\n- 이벤트 기간: 10/20 ~ 11/3\n- 다양한 보상과 혜택 제공"
+                },
+                {
+                    id: 4,
+                    title: "v1.3.1 패치",
+                    date: "2023-10-10",
+                    type: "resource",
+                    summary: "리소스 패치 및 최적화",
+                    details: "- 게임 클라이언트 최적화\n- 새로운 배경 음악 추가\n- 캐릭터 모션 개선\n- 로딩 시간 단축"
+                }
+            ],
+            characters: [
+                {
+                    id: 1,
+                    name: "레이븐",
+                    grade: "UR",
+                    attribute: "어둠",
+                    position: "딜러",
+                    story: "어둠의 힘을 다루는 수수께끼의 검사. 과거의 기억을 잃은 채 방랑하며 강한 적을 찾아다닌다.",
+                    combat: "높은 단일 대상 데미지를 주는 암살자 타입. 스킬 연계를 통해 폭발적인 데미지를 낼 수 있다.",
+                    equipment: "공격력과 치명타 확률 위주의 장비 추천",
+                    skills: "1. 어둠의 발톱 - 단일 대상에게 데미지\n2. 그림자 밟기 - 적 뒤로 이동하며 공격\n3. 암흑의 난무 - 빠르게 연속 공격\n4. 심연의 일격 - 강력한 단일 대상 궁극기",
+                    imageUrl: "https://via.placeholder.com/300x400/333/fff?text=Raven"
+                },
+                {
+                    id: 2,
+                    name: "세레나",
+                    grade: "SSR",
+                    attribute: "빛",
+                    position: "서포터",
+                    story: "빛의 사제단의 수호자. 순수한 마음으로 동료들을 치유하고 보호한다.",
+                    combat: "강력한 치유와 보호막으로 아군을 지원하는 힐러 타입. 위기 상황에서 팀을 구할 수 있다.",
+                    equipment: "체력과 치유량 증가 옵션이 있는 장비 추천",
+                    skills: "1. 빛의 치유 - 아군 체력 회복\n2. 보호의 빛 - 보호막 생성\n3. 정화의 빛 - 아군의 상태 이상 제거\n4. 신의 축복 - 광역 치유 및 버프",
+                    imageUrl: "https://via.placeholder.com/300x400/fff/333?text=Serena"
+                },
+                {
+                    id: 3,
+                    name: "그림자",
+                    grade: "SR",
+                    attribute: "바람",
+                    position: "딜러",
+                    story: "어둠의 길드에서 활동하는 암살자. 빠른 속도와 정밀한 공격이 특징이다.",
+                    combat: "빠른 공격 속도와 연속 공격이 특징인 물리 딜러. 이동 속도가 빠르다.",
+                    equipment: "공격 속도와 치명타 데미지 위주의 장비 추천",
+                    skills: "1. 그림자 베기 - 빠른 연속 공격\n2. 독 바르기 - 공격에 독 데미지 추가\n3. 회피 - 적의 공격을 회피\n4. 그림자 난무 - 주변 적들에게 빠르게 연속 공격",
+                    imageUrl: "https://via.placeholder.com/300x400/555/fff?text=Shadow"
+                },
+                {
+                    id: 4,
+                    name: "토르",
+                    grade: "R",
+                    attribute: "땅",
+                    position: "탱커",
+                    story: "거대한 망치를 다루는 전사. 강력한 힘으로 전장을 누빈다.",
+                    combat: "높은 체력과 방어력을 가진 탱커. 아군을 보호하는데 특화되어 있다.",
+                    equipment: "체력과 방어력 위주의 장비 추천",
+                    skills: "1. 망치 내리치기 - 단일 대상 공격\n2. 방패 올리기 - 자신의 방어력 증가\n3. 도발 - 적의 공격을 자신에게 유도\n4. 대지 강타 - 주변 적들에게 광역 데미지",
+                    imageUrl: "https://via.placeholder.com/300x400/964B00/fff?text=Thor"
+                }
+            ],
+            features: [],
+            currentUser: null,
+            editingPatchId: null,
+            editingCharacterId: null
         };
-        
-        // 골드 비용 계수 (예시)
-        const goldCost = {
-            UR: 50,
-            SSR: 40,
-            SR: 30,
-            R: 20
+
+        // 강화 경험치 데이터
+        const enhancementData = {
+            UR: {
+                weapon: {
+                    exp: [100,200,300,400,500,600,700,800,900,1000,1200,1400,1600,1800,2000,2200,2400,2600,2800,3000,3400,3800,4200,4600,5000,5400,5800,6200,6600,7000,8000,9000,10000,11000,12000,13000,14000,15000,16000,17000,19000,21000,23000,25000,27000,29000,31000,33000,35000,37000,41000,45000,49000,53000,57000,61000,65000,69000,73000,77000,81000,85000,89000,93000,97000,101000,105000,109000,113000],
+                    gold: [1000,2000,3000,4000,5000,6000,7000,8000,9000,10000,12000,14000,16000,18000,20000,22000,24000,26000,28000,30000,34000,38000,42000,46000,50000,54000,58000,62000,66000,70000,80000,90000,100000,110000,120000,130000,140000,150000,160000,170000,190000,210000,230000,250000,270000,290000,310000,330000,350000,370000,410000,450000,490000,530000,570000,610000,650000,690000,730000,770000,810000,850000,890000,930000,970000,1010000,1050000,1090000,1130000]
+                },
+                accessory: {
+                    exp: [150,300,450,600,750,900,1050,1200,1350,1500,1800,2100,2400,2700,3000,3300,3600,3900,4200,4500,5100,5700,6300,6900,7500,8100,8700,9300,9900,10500,12000,13500,15000,16500,18000,19500,21000,22500,24000,25500,28500,31500,34500,37500,40500,43500,46500,49500,52500,55500,61500,67500,73500,79500,85500,91500,97500,103500,109500,115500,121500,127500,133500,139500,145500,151500,157500,163500,169500],
+                    gold: [1500,3000,4500,6000,7500,9000,10500,12000,13500,15000,18000,21000,24000,27000,30000,33000,36000,39000,42000,45000,51000,57000,63000,69000,75000,81000,87000,93000,99000,105000,120000,135000,150000,165000,180000,195000,210000,225000,240000,255000,285000,315000,345000,375000,405000,435000,465000,495000,525000,555000,615000,675000,735000,795000,855000,915000,975000,1035000,1095000,1155000,1215000,1275000,1335000,1395000,1455000,1515000,1575000,1635000,1695000]
+                }
+            },
+            SSR: {
+                weapon: {
+                    exp: [65,110,165,220,275,330,385,440,495,550,660,770,880,990,1100,1210,1320,1430,1540,1650,1870,2090,2310,2530,2750,2970,3190,3410,3630,3850,4400,4950,5500,6050,6600,7150,7700,8250,8800,9350,10450,11550,12650,13750,14850,15950,17050,18150,19250,20350,22550,24750,26950,29150,31350,33550,35750,37950,40150,42350,44550,46750,48950,51150,53350,55550,57750,59950,62150],
+                    gold: [650,1100,1650,2200,2750,3300,3850,4400,4950,5500,6600,7700,8800,9900,11000,12100,13200,14300,15400,16500,18700,20900,23100,25300,27500,29700,31900,34100,36300,38500,44000,49500,55000,60500,66000,71500,77000,82500,88000,93500,104500,115500,126500,137500,148500,159500,170500,181500,192500,203500,225500,247500,269500,291500,313500,335500,357500,379500,401500,423500,445500,467500,489500,511500,533500,555500,577500,599500,621500]
+                },
+                accessory: {
+                    exp: [97,165,247,330,412,495,577,660,742,825,990,1155,1320,1485,1650,1815,1980,2145,2310,2475,2805,3135,3465,3795,4125,4455,4785,5115,5445,5775,6600,7425,8250,9075,9900,10725,11550,12375,13200,14025,15675,17325,18975,20625,22275,23925,25575,27225,28875,30525,33825,37125,40425,43725,47025,50325,53625,56925,60225,63525,66825,70125,73425,76725,80025,83325,86625,89925,93225],
+                    gold: [975,1650,2475,3300,4125,4950,5775,6600,7425,8250,9900,11550,13200,14850,16500,18150,19800,21450,23100,24750,28050,31350,34650,37950,41250,44550,47850,51150,54450,57750,66000,74250,82500,90750,99000,107250,115500,123750,132000,140250,156750,173250,189750,206250,222750,239250,255750,272250,288750,305250,338250,371250,404250,437250,470250,503250,536250,569250,602250,635250,668250,701250,734250,767250,800250,833250,866250,899250,932250]
+                }
+            },
+            SR: {
+                weapon: {
+                    exp: [40,70,105,140,175,210,245,280,315,350,420,490,560,630,700,770,840,910,980,1050,1190,1330,1470,1610,1750,1890,2030,2170,2310,2450,2800,3150,3500,3850,4200,4550,4900,5250,5600,5950,6650,7350,8050,8750,9450,10150,10850,11550,12250,12950,14350,15750,17150,18550,19950,21350,22750,24150,25550,26950,28350,29750,31150,32550,33950,35350,36750,38150,39550],
+                    gold: [400,700,1050,1400,1750,2100,2450,2800,3150,3500,4200,4900,5600,6300,7000,7700,8400,9100,9800,10500,11900,13300,14700,16100,17500,18900,20300,21700,23100,24500,28000,31500,35000,38500,42000,45500,49000,52500,56000,59500,66500,73500,80500,87500,94500,101500,108500,115500,122500,129500,143500,157500,171500,185500,199500,213500,227500,241500,255500,269500,283500,297500,311500,325500,339500,353500,367500,381500,395500]
+                },
+                accessory: {
+                    exp: [60,105,157,210,262,315,367,420,472,525,630,735,840,945,1050,1155,1260,1365,1470,1575,1785,1995,2205,2415,2625,2835,3045,3255,3465,3675,4200,4725,5250,5775,6300,6825,7350,7875,8400,8925,9975,11025,12075,13125,14175,15225,16275,17325,18375,19425,21525,23625,25725,27825,29925,32025,34125,36225,38325,40425,42525,44625,46725,48825,50925,53025,55125,57225,59325],
+                    gold: [600,1050,1575,2100,2625,3150,3675,4200,4725,5250,6300,7350,8400,9450,10500,11550,12600,13650,14700,15750,17850,19950,22050,24150,26250,28350,30450,32550,34650,36750,42000,47250,52500,57750,63000,68250,73500,78750,84000,89250,99750,110250,120750,131250,141750,152250,162750,173250,183750,194250,215250,236250,257250,278250,299250,320250,341250,362250,383250,404250,425250,446250,467250,488250,509250,530250,551250,572250,593250]
+                }
+            },
+            R: {
+                weapon: {
+                    exp: [25,50,75,100,125,150,175,200,225,250,300,350,400,450,500,550,600,650,700,750,850,950,1050,1150,1250,1350,1450,1550,1650,1750,2000,2250,2500,2750,3000,3250,3500,3750,4000,4250,4750,5250,5750,6250,6750,7250,7750,8250,8750,9250,10250,11250,12250,13250,14250,15250,16250,17250,18250,19250,20250,21250,22250,23250,24250,25250,26250,27250,28250],
+                    gold: [250,500,750,1000,1250,1500,1750,2000,2250,2500,3000,3500,4000,4500,5000,5500,6000,6500,7000,7500,8500,9500,10500,11500,12500,13500,14500,15500,16500,17500,20000,22500,25000,27500,30000,32500,35000,37500,40000,42500,47500,52500,57500,62500,67500,72500,77500,82500,87500,92500,102500,112500,122500,132500,142500,152500,162500,172500,182500,192500,202500,212500,222500,232500,242500,252500,262500,272500,282500]
+                },
+                accessory: {
+                    exp: [37,75,112,150,187,225,262,300,337,375,450,525,600,675,750,825,900,975,1050,1125,1275,1425,1575,1725,1875,2025,2175,2325,2475,2625,3000,3375,3750,4125,4500,4875,5250,5625,6000,6375,7125,7875,8625,9375,10125,10875,11625,12375,13125,13875,15375,16875,18375,19875,21375,22875,24375,25875,27375,28875,30375,31875,33375,34875,36375,37875,39375,40875,42375],
+                    gold: [375,750,1125,1500,1875,2250,2625,3000,3375,3750,4500,5250,6000,6750,7500,8250,9000,9750,10500,11250,12750,14250,15750,17250,18750,20250,21750,23250,24750,26250,30000,33750,37500,41250,45000,48750,52500,56250,60000,63750,71250,78750,86250,93750,101250,108750,116250,123750,131250,138750,153750,168750,183750,198750,213750,228750,243750,258750,273750,288750,303750,318750,333750,348750,363750,378750,393750,408750,423750]
+                }
+            }
         };
-        
-        // 페이지 로드 시 초기화
-        document.addEventListener('DOMContentLoaded', function() {
-            // 스무스 스크롤 설정
-            setupSmoothScroll();
+
+        // DOM 요소
+        const elements = {
+            patchList: document.getElementById('patch-list'),
+            characterGrid: document.getElementById('character-grid'),
+            characterModal: document.getElementById('character-modal'),
+            loginModal: document.getElementById('login-modal'),
+            adminTools: document.getElementById('admin-tools'),
+            adminBtn: document.getElementById('admin-btn'),
+            logoutBtn: document.getElementById('logout-btn'),
+            editPatchSection: document.getElementById('edit-patch-section'),
+            editCharacterSection: document.getElementById('edit-character-section'),
+            addFeatureSection: document.getElementById('add-feature-section'),
+            expTable: document.getElementById('exp-table'),
+            expTableBody: document.getElementById('exp-table-body')
+        };
+
+        // 초기화 함수
+        function init() {
+            renderPatches();
+            renderCharacters();
+            setupEventListeners();
+            generateExpTable();
+        }
+
+        // 패치노트 렌더링
+        function renderPatches(filter = 'all') {
+            elements.patchList.innerHTML = '';
             
-            // 강화 계산기 이벤트 리스너
-            setupCalculator();
+            const filteredPatches = filter === 'all' 
+                ? appData.patches 
+                : appData.patches.filter(patch => patch.type === filter);
             
-            // 패치노트 더보기 버튼 설정
-            setupPatchNotes();
+            filteredPatches.forEach(patch => {
+                const patchCard = document.createElement('div');
+                patchCard.className = 'patch-card';
+                patchCard.dataset.id = patch.id;
+                patchCard.dataset.type = patch.type;
+                
+                patchCard.innerHTML = `
+                    <div class="patch-header">
+                        <div>
+                            <div class="patch-title">${patch.title}</div>
+                            <div class="patch-date">${patch.date}</div>
+                        </div>
+                        <span class="patch-type-badge">${getTypeName(patch.type)}</span>
+                    </div>
+                    <div class="patch-summary">${patch.summary}</div>
+                    <div class="patch-details">${patch.details.replace(/\n/g, '<br>')}</div>
+                    <div class="view-more">자세히 보기</div>
+                `;
+                
+                elements.patchList.appendChild(patchCard);
+            });
             
-            // 캐릭터 상세 팝업 설정
-            setupCharacterPopup();
+            // 자세히 보기 버튼 이벤트 추가
+            document.querySelectorAll('.view-more').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const details = this.previousElementSibling;
+                    details.classList.toggle('show');
+                    this.textContent = details.classList.contains('show') ? '간략히 보기' : '자세히 보기';
+                });
+            });
+        }
+
+        // 캐릭터 렌더링
+        function renderCharacters() {
+            elements.characterGrid.innerHTML = '';
             
-            // 필터 탭 설정
-            setupFilterTabs();
+            appData.characters.forEach(character => {
+                const characterCard = document.createElement('div');
+                characterCard.className = 'character-card';
+                characterCard.dataset.id = character.id;
+                
+                characterCard.innerHTML = `
+                    <div class="character-thumbnail" style="background-image: url('${character.imageUrl}')"></div>
+                    <div class="character-info">
+                        <div class="character-name">${character.name}</div>
+                        <div class="character-meta">
+                            <span>${character.grade}</span>
+                            <span>${character.attribute}</span>
+                            <span>${character.position}</span>
+                        </div>
+                        <div class="character-actions">
+                            <button class="action-btn story-btn" data-id="${character.id}">스토리 보기</button>
+                            <button class="action-btn detail-btn" data-id="${character.id}">상세 정보</button>
+                        </div>
+                    </div>
+                `;
+                
+                elements.characterGrid.appendChild(characterCard);
+            });
             
-            // 장비 필터 설정
-            setupEquipmentFilter();
-            
-            // 관리자 패널 설정
-            setupAdminPanel();
-        });
-        
-        // 스무스 스크롤 설정
-        function setupSmoothScroll() {
-            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-                anchor.addEventListener('click', function(e) {
-                    e.preventDefault();
+            // 캐릭터 버튼 이벤트 추가
+            document.querySelectorAll('.story-btn, .detail-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const characterId = parseInt(this.dataset.id);
+                    const character = appData.characters.find(c => c.id === characterId);
                     
-                    const targetId = this.getAttribute('href');
-                    const targetElement = document.querySelector(targetId);
-                    
-                    if (targetElement) {
-                        window.scrollTo({
-                            top: targetElement.offsetTop - 80,
-                            behavior: 'smooth'
-                        });
+                    if (this.classList.contains('story-btn')) {
+                        openCharacterModal(character, 'story');
+                    } else {
+                        openCharacterModal(character, 'details');
                     }
                 });
             });
         }
-        
-        // 강화 계산기 설정
-        function setupCalculator() {
-            calculateBtn.addEventListener('click', calculateEnhancement);
+
+        // 캐릭터 모달 열기
+        function openCharacterModal(character, tab = 'details') {
+            const modal = elements.characterModal;
             
-            // 입력값 변경 시 자동 계산
-            document.querySelectorAll('#calculator select, #calculator input').forEach(element => {
-                element.addEventListener('change', calculateEnhancement);
-                element.addEventListener('input', calculateEnhancement);
-            });
+            document.getElementById('modal-character-name').textContent = character.name;
+            document.getElementById('modal-character-image').style.backgroundImage = `url('${character.imageUrl}')`;
+            document.getElementById('modal-character-grade').textContent = character.grade;
+            document.getElementById('modal-character-attribute').textContent = character.attribute;
+            document.getElementById('modal-character-position').textContent = character.position;
+            document.getElementById('modal-character-story').textContent = character.story;
+            document.getElementById('modal-character-combat').textContent = character.combat;
+            document.getElementById('modal-character-equipment').textContent = character.equipment;
+            document.getElementById('modal-character-skills').textContent = character.skills;
             
-            // 경험치 표 보기 버튼
-            showExpTableBtn.addEventListener('click', function() {
-                alert('UR: 0,100,220,360,520,700,900,1120,1360,1620,1900,2200,2520,2860,3220,3600,4000,4420,4860,5320,5800\n\n' +
-                      'SSR: 0,80,176,288,416,560,720,896,1088,1296,1520,1760,2016,2288,2576,2880,3200,3536,3888,4256,4640\n\n' +
-                      'SR: 0,60,132,216,312,420,540,672,816,972,1140,1320,1512,1716,1932,2160,2400,2652,2916,3192,3480\n\n' +
-                      'R: 0,40,88,144,208,280,360,448,544,648,760,880,1008,1144,1288,1440,1600,1768,1944,2128,2320');
-            });
+            modal.classList.add('show');
         }
-        
-        // 강화 계산 함수
+
+        // 이벤트 리스너 설정
+        function setupEventListeners() {
+            // 네비게이션 스크롤
+            document.querySelectorAll('nav a').forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const targetId = this.getAttribute('href');
+                    const targetElement = document.querySelector(targetId);
+                    
+                    targetElement.scrollIntoView({
+                        behavior: 'smooth'
+                    });
+                });
+            });
+            
+            // 패치 필터 버튼
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+                    
+                    const filter = this.dataset.filter;
+                    renderPatches(filter);
+                });
+            });
+            
+            // 강화 계산기 계산 버튼
+            document.getElementById('calculate-btn').addEventListener('click', calculateEnhancement);
+            
+            // 경험치 테이블 보기 버튼
+            document.getElementById('show-exp-table').addEventListener('click', function() {
+                elements.expTable.classList.toggle('show');
+                this.textContent = elements.expTable.classList.contains('show') 
+                    ? '경험치 표 숨기기' 
+                    : '등급별 경험치 표 보기';
+            });
+            
+            // 모달 닫기 버튼
+            document.querySelector('.close-modal').addEventListener('click', function() {
+                elements.characterModal.classList.remove('show');
+            });
+            
+            // 관리자 버튼
+            elements.adminBtn.addEventListener('click', function() {
+                if (appData.currentUser) {
+                    elements.adminTools.classList.toggle('show');
+                } else {
+                    elements.loginModal.classList.add('show');
+                }
+            });
+            
+            // 로그인 모달 닫기
+            document.getElementById('login-cancel').addEventListener('click', function() {
+                elements.loginModal.classList.remove('show');
+            });
+            
+            // 로그인 제출
+            document.getElementById('login-submit').addEventListener('click', function() {
+                const username = document.getElementById('admin-username').value;
+                const password = document.getElementById('admin-password').value;
+                
+                // 간단한 인증 (실제로는 서버에서 처리해야 함)
+                if (username === 'admin' && password === 'admin123') {
+                    appData.currentUser = { username };
+                    elements.loginModal.classList.remove('show');
+                    elements.adminTools.classList.add('show');
+                    alert('관리자로 로그인되었습니다.');
+                } else {
+                    alert('잘못된 아이디 또는 비밀번호입니다.');
+                }
+            });
+            
+            // 로그아웃
+            elements.logoutBtn.addEventListener('click', function() {
+                appData.currentUser = null;
+                elements.adminTools.classList.remove('show');
+                alert('로그아웃되었습니다.');
+            });
+            
+            // 관리자 기능 버튼들
+            document.getElementById('edit-patch-btn').addEventListener('click', function() {
+                toggleEditSection('edit-patch-section');
+                resetPatchForm();
+            });
+            
+            document.getElementById('edit-character-btn').addEventListener('click', function() {
+                toggleEditSection('edit-character-section');
+                resetCharacterForm();
+            });
+            
+            document.getElementById('add-feature-btn').addEventListener('click', function() {
+                toggleEditSection('add-feature-section');
+            });
+            
+            // 패치 추가/수정/삭제
+            document.getElementById('add-patch-btn').addEventListener('click', addPatch);
+            document.getElementById('update-patch-btn').addEventListener('click', updatePatch);
+            document.getElementById('delete-patch-btn').addEventListener('click', deletePatch);
+            
+            // 캐릭터 추가/수정/삭제
+            document.getElementById('add-character-btn').addEventListener('click', addCharacter);
+            document.getElementById('update-character-btn').addEventListener('click', updateCharacter);
+            document.getElementById('delete-character-btn').addEventListener('click', deleteCharacter);
+            
+            // 새로운 기능 추가
+            document.getElementById('add-feature-submit').addEventListener('click', addFeature);
+            
+            // 정보 저장
+            document.getElementById('save-data-btn').addEventListener('click', saveData);
+            
+            // 정보 내보내기
+            document.getElementById('export-data-btn').addEventListener('click', exportData);
+            
+            // 패치노트 카드 드래그 앤 드롭 (관리자용)
+            elements.patchList.addEventListener('dragstart', handleDragStart);
+            elements.patchList.addEventListener('dragover', handleDragOver);
+            elements.patchList.addEventListener('drop', handleDrop);
+            elements.patchList.addEventListener('dragend', handleDragEnd);
+        }
+
+        // 강화 계산
         function calculateEnhancement() {
             const grade = document.getElementById('equipment-grade').value;
-            const currentLevel = parseInt(document.getElementById('current-level').value) || 0;
-            const targetLevel = parseInt(document.getElementById('target-level').value) || 0;
+            const type = document.getElementById('equipment-type').value;
+            const currentLevel = parseInt(document.getElementById('current-level').value);
+            const targetLevel = parseInt(document.getElementById('target-level').value);
             
             // 유효성 검사
             if (currentLevel >= targetLevel) {
-                resultContainer.style.display = 'none';
+                alert('목표 레벨은 현재 레벨보다 높아야 합니다.');
+                return;
+            }
+            
+            if (currentLevel < 1 || targetLevel > 70) {
+                alert('레벨은 1에서 70 사이여야 합니다.');
                 return;
             }
             
             // 경험치 계산
-            const totalExp = expTable[grade][targetLevel] - expTable[grade][currentLevel];
+            const expData = enhancementData[grade][type].exp;
+            let totalExp = 0;
+            
+            for (let i = currentLevel; i < targetLevel; i++) {
+                totalExp += expData[i];
+            }
             
             // 골드 계산
-            const totalGold = totalExp * goldCost[grade];
+            const goldData = enhancementData[grade][type].gold;
+            let totalGold = 0;
             
-            // 재료 계산 (예시: 8Ti = 800exp, 4Ti = 400exp, 2Ti = 200exp, 1Ti = 100exp)
-            const material8 = Math.floor(totalExp / 800);
-            const remainingExp8 = totalExp % 800;
+            for (let i = currentLevel; i < targetLevel; i++) {
+                totalGold += goldData[i];
+            }
             
-            const material4 = Math.floor(remainingExp8 / 400);
-            const remainingExp4 = remainingExp8 % 400;
-            
-            const material2 = Math.floor(remainingExp4 / 200);
-            const remainingExp2 = remainingExp4 % 200;
-            
-            const material1 = Math.ceil(remainingExp2 / 100);
+            // 재료 계산
+            const materials = {
+                '8ti': Math.floor(totalExp / 4000),
+                '4ti': Math.floor((totalExp % 4000) / 2000),
+                '2ti': Math.floor((totalExp % 2000) / 1000),
+                '1ti': Math.floor((totalExp % 1000) / 500)
+            };
             
             // 결과 표시
             document.getElementById('total-exp').textContent = totalExp.toLocaleString();
             document.getElementById('total-gold').textContent = totalGold.toLocaleString();
-            document.getElementById('material-8').textContent = material8;
-            document.getElementById('material-4').textContent = material4;
-            document.getElementById('material-2').textContent = material2;
-            document.getElementById('material-1').textContent = material1;
-            
-            resultContainer.style.display = 'block';
+            document.getElementById('material-8ti').textContent = materials['8ti'];
+            document.getElementById('material-4ti').textContent = materials['4ti'];
+            document.getElementById('material-2ti').textContent = materials['2ti'];
+            document.getElementById('material-1ti').textContent = materials['1ti'];
         }
-        
-        // 패치노트 설정
-        function setupPatchNotes() {
-            patchMoreButtons.forEach(button => {
-                button.addEventListener('click', function() {
-                    const details = this.nextElementSibling;
-                    details.classList.toggle('show');
-                    
-                    if (details.classList.contains('show')) {
-                        this.textContent = '간략히 보기';
-                    } else {
-                        this.textContent = '자세히 보기';
-                    }
-                });
-            });
-        }
-        
-        // 캐릭터 상세 팝업 설정
-        function setupCharacterPopup() {
-            detailButtons.forEach(button => {
-                button.addEventListener('click', function() {
-                    // 실제 구현에서는 클릭한 캐릭터의 데이터를 가져와 팝업을 채움
-                    characterPopup.classList.add('show');
-                    document.body.style.overflow = 'hidden';
-                });
-            });
+
+        // 경험치 테이블 생성
+        function generateExpTable() {
+            const tbody = elements.expTableBody;
+            tbody.innerHTML = '';
             
-            closePopupBtn.addEventListener('click', function() {
-                characterPopup.classList.remove('show');
-                document.body.style.overflow = 'auto';
-            });
-            
-            characterPopup.addEventListener('click', function(e) {
-                if (e.target === this) {
-                    this.classList.remove('show');
-                    document.body.style.overflow = 'auto';
-                }
-            });
-        }
-        
-        // 필터 탭 설정
-        function setupFilterTabs() {
-            filterTabs.forEach(tab => {
-                tab.addEventListener('click', function() {
-                    const filter = this.getAttribute('data-filter');
-                    
-                    // 활성 탭 표시
-                    filterTabs.forEach(t => t.classList.remove('active'));
-                    this.classList.add('active');
-                    
-                    // 필터 적용
-                    const patchCards = document.querySelectorAll('.patch-card');
-                    
-                    patchCards.forEach(card => {
-                        if (filter === 'all' || card.getAttribute('data-category') === filter) {
-                            card.style.display = 'block';
-                        } else {
-                            card.style.display = 'none';
-                        }
-                    });
-                });
-            });
-        }
-        
-        // 장비 필터 설정
-        function setupEquipmentFilter() {
-            equipmentFilterBtns.forEach(btn => {
-                btn.addEventListener('click', function() {
-                    const type = this.getAttribute('data-type');
-                    
-                    // 활성 버튼 표시
-                    equipmentFilterBtns.forEach(b => b.classList.remove('active'));
-                    this.classList.add('active');
-                    
-                    // 필터 적용
-                    const equipmentCards = document.querySelectorAll('.equipment-card');
-                    
-                    equipmentCards.forEach(card => {
-                        if (type === 'all' || card.getAttribute('data-type') === type) {
-                            card.style.display = 'block';
-                        } else {
-                            card.style.display = 'none';
-                        }
-                    });
-                });
-            });
-        }
-        
-        // 관리자 패널 설정
-        function setupAdminPanel() {
-            adminPanel.addEventListener('click', function() {
-                if (isAdmin) {
-                    adminLoggedinMenu.classList.toggle('show');
-                    adminMenu.classList.remove('show');
-                } else {
-                    adminMenu.classList.toggle('show');
-                    adminLoggedinMenu.classList.remove('show');
-                }
-            });
-            
-            // 관리자 로그인 버튼
-            loginAdminBtn.addEventListener('click', function() {
-                adminLoginModal.style.display = 'flex';
-                adminMenu.classList.remove('show');
-            });
-            
-            // 로그인 버튼
-            loginBtn.addEventListener('click', function() {
-                const id = document.getElementById('admin-id').value;
-                const pw = document.getElementById('admin-pw').value;
+            for (let i = 0; i < 70; i++) {
+                const row = document.createElement('tr');
                 
-                // 간단한 로그인 검증 (실제로는 서버에서 처리)
-                if (id === 'admin' && pw === '1234') {
-                    isAdmin = true;
-                    adminLoginModal.style.display = 'none';
-                    alert('관리자로 로그인되었습니다.');
-                } else {
-                    alert('아이디 또는 비밀번호가 잘못되었습니다.');
-                }
-            });
-            
-            // 로그아웃 버튼
-            logoutBtn.addEventListener('click', function() {
-                isAdmin = false;
-                isEditMode = false;
-                adminLoggedinMenu.classList.remove('show');
-                exitEditMode();
-                alert('로그아웃되었습니다.');
-            });
-            
-            // 패치노트 수정 버튼
-            editPatchBtn.addEventListener('click', function() {
-                if (!isEditMode) {
-                    enterEditMode('patch');
-                } else {
-                    exitEditMode();
-                }
-            });
-            
-            // 캐릭터 정보 수정 버튼
-            editCharacterBtn.addEventListener('click', function() {
-                if (!isEditMode) {
-                    enterEditMode('character');
-                } else {
-                    exitEditMode();
-                }
-            });
-            
-            // 새로운 기능 추가 버튼
-            addFeatureBtn.addEventListener('click', function() {
-                if (confirm('장비 도감 기능을 추가하시겠습니까?')) {
-                    equipmentTab.style.display = 'block';
-                    equipmentSection.style.display = 'block';
-                    alert('장비 도감 기능이 추가되었습니다!');
-                }
-            });
-            
-            // 모달 외부 클릭 시 닫기
-            adminLoginModal.addEventListener('click', function(e) {
-                if (e.target === this) {
-                    this.style.display = 'none';
-                }
-            });
-        }
-        
-        // 편집 모드 진입
-        function enterEditMode(mode) {
-            isEditMode = true;
-            
-            let elements = [];
-            if (mode === 'patch') {
-                elements = document.querySelectorAll('.patch-card, .filter-tabs');
-                editPatchBtn.textContent = '편집 종료';
-            } else if (mode === 'character') {
-                elements = document.querySelectorAll('.character-card');
-                editCharacterBtn.textContent = '편집 종료';
-            }
-            
-            elements.forEach(el => {
-                el.classList.add('edit-mode');
+                row.innerHTML = `
+                    <td>${i + 1}</td>
+                    <td>${enhancementData.UR.weapon.exp[i]}</td>
+                    <td>${enhancementData.UR.accessory.exp[i]}</td>
+                    <td>${enhancementData.SSR.weapon.exp[i]}</td>
+                    <td>${enhancementData.SSR.accessory.exp[i]}</td>
+                    <td>${enhancementData.SR.weapon.exp[i]}</td>
+                    <td>${enhancementData.SR.accessory.exp[i]}</td>
+                    <td>${enhancementData.R.weapon.exp[i]}</td>
+                    <td>${enhancementData.R.accessory.exp[i]}</td>
+                `;
                 
-                const controls = document.createElement('div');
-                controls.className = 'edit-controls';
-                
-                const upBtn = document.createElement('button');
-                upBtn.innerHTML = '↑';
-                upBtn.addEventListener('click', () => moveElement(el, 'up'));
-                
-                const downBtn = document.createElement('button');
-                downBtn.innerHTML = '↓';
-                downBtn.addEventListener('click', () => moveElement(el, 'down'));
-                
-                const deleteBtn = document.createElement('button');
-                deleteBtn.innerHTML = '×';
-                deleteBtn.addEventListener('click', () => el.remove());
-                
-                controls.appendChild(upBtn);
-                controls.appendChild(downBtn);
-                controls.appendChild(deleteBtn);
-                
-                el.appendChild(controls);
-                
-                // 드래그 앤 드롭 설정
-                el.draggable = true;
-                el.addEventListener('dragstart', dragStart);
-                el.addEventListener('dragover', dragOver);
-                el.addEventListener('drop', drop);
-            });
-            
-            // 컨테이너에 드롭 이벤트 추가
-            const container = mode === 'patch' ? 
-                document.getElementById('patch-cards-container') : 
-                document.getElementById('character-cards-container');
-                
-            container.addEventListener('dragover', dragOver);
-            container.addEventListener('drop', drop);
-        }
-        
-        // 편집 모드 종료
-        function exitEditMode() {
-            isEditMode = false;
-            
-            document.querySelectorAll('.edit-mode').forEach(el => {
-                el.classList.remove('edit-mode');
-                const controls = el.querySelector('.edit-controls');
-                if (controls) controls.remove();
-                
-                // 드래그 앤 드롭 제거
-                el.draggable = false;
-                el.removeEventListener('dragstart', dragStart);
-                el.removeEventListener('dragover', dragOver);
-                el.removeEventListener('drop', drop);
-            });
-            
-            editPatchBtn.textContent = '패치노트 수정';
-            editCharacterBtn.textContent = '�릭터 정보 수정';
-        }
-        
-        // 요소 이동 (위/아래)
-        function moveElement(element, direction) {
-            const parent = element.parentNode;
-            const sibling = direction === 'up' ? 
-                element.previousElementSibling : 
-                element.nextElementSibling;
-            
-            if (sibling) {
-                parent.insertBefore(
-                    direction === 'up' ? element : sibling,
-                    direction === 'up' ? sibling : element
-                );
+                tbody.appendChild(row);
             }
         }
-        
-        // 드래그 앤 드롭 함수
-        function dragStart(e) {
-            currentDraggedElement = this;
-            e.dataTransfer.effectAllowed = 'move';
-            e.dataTransfer.setData('text/html', this.innerHTML);
-        }
-        
-        function dragOver(e) {
-            e.preventDefault();
-            e.dataTransfer.dropEffect = 'move';
-            return false;
-        }
-        
-        function drop(e) {
-            e.preventDefault();
+
+        // 패치 유형 이름 가져오기
+        function getTypeName(type) {
+            const types = {
+                'character': '캐릭터 업데이트',
+                'balance': '밸런스 조정',
+                'resource': '리소스 패치',
+                'event': '이벤트',
+                'other': '기타'
+            };
             
-            if (currentDraggedElement !== this) {
-                const container = this.parentNode;
-                const rect = this.getBoundingClientRect();
+            return types[type] || type;
+        }
+
+        // 편집 섹션 토글
+        function toggleEditSection(sectionId) {
+            document.querySelectorAll('.edit-section').forEach(section => {
+                section.classList.remove('show');
+            });
+            
+            document.getElementById(sectionId).classList.add('show');
+        }
+
+        // 패치 폼 리셋
+        function resetPatchForm() {
+            document.getElementById('patch-title').value = '';
+            document.getElementById('patch-date').value = '';
+            document.getElementById('patch-type').value = 'character';
+            document.getElementById('patch-summary').value = '';
+            document.getElementById('patch-details').value = '';
+            
+            document.getElementById('add-patch-btn').style.display = 'block';
+            document.getElementById('update-patch-btn').style.display = 'none';
+            document.getElementById('delete-patch-btn').style.display = 'none';
+            
+            appData.editingPatchId = null;
+        }
+
+        // 캐릭터 폼 리셋
+        function resetCharacterForm() {
+            document.getElementById('character-name').value = '';
+            document.getElementById('character-grade').value = 'UR';
+            document.getElementById('character-attribute').value = '';
+            document.getElementById('character-position').value = '';
+            document.getElementById('character-story').value = '';
+            document.getElementById('character-combat').value = '';
+            document.getElementById('character-equipment').value = '';
+            document.getElementById('character-skills').value = '';
+            document.getElementById('character-image-url').value = '';
+            
+            document.getElementById('add-character-btn').style.display = 'block';
+            document.getElementById('update-character-btn').style.display = 'none';
+            document.getElementById('delete-character-btn').style.display = 'none';
+            
+            appData.editingCharacterId = null;
+        }
+
+        // 패치 추가
+        function addPatch() {
+            const title = document.getElementById('patch-title').value;
+            const date = document.getElementById('patch-date').value;
+            const type = document.getElementById('patch-type').value;
+            const summary = document.getElementById('patch-summary').value;
+            const details = document.getElementById('patch-details').value;
+            
+            if (!title || !date || !summary || !details) {
+                alert('모든 필드를 채워주세요.');
+                return;
+            }
+            
+            const newPatch = {
+                id: appData.patches.length > 0 ? Math.max(...appData.patches.map(p => p.id)) + 1 : 1,
+                title,
+                date,
+                type,
+                summary,
+                details
+            };
+            
+            appData.patches.unshift(newPatch);
+            renderPatches();
+            resetPatchForm();
+            alert('패치노트가 추가되었습니다.');
+        }
+
+        // 패치 업데이트
+        function updatePatch() {
+            const title = document.getElementById('patch-title').value;
+            const date = document.getElementById('patch-date').value;
+            const type = document.getElementById('patch-type').value;
+            const summary = document.getElementById('patch-summary').value;
+            const details = document.getElementById('patch-details').value;
+            
+            if (!title || !date || !summary || !details) {
+                alert('모든 필드를 채워주세요.');
+                return;
+            }
+            
+            const patchIndex = appData.patches.findIndex(p => p.id === appData.editingPatchId);
+            
+            if (patchIndex !== -1) {
+                appData.patches[patchIndex] = {
+                    ...appData.patches[patchIndex],
+                    title,
+                    date,
+                    type,
+                    summary,
+                    details
+                };
+                
+                renderPatches();
+                resetPatchForm();
+                alert('패치노트가 업데이트되었습니다.');
+            }
+        }
+
+        // 패치 삭제
+        function deletePatch() {
+            if (confirm('정말로 이 패치노트를 삭제하시겠습니까?')) {
+                appData.patches = appData.patches.filter(p => p.id !== appData.editingPatchId);
+                renderPatches();
+                resetPatchForm();
+                alert('패치노트가 삭제되었습니다.');
+            }
+        }
+
+        // 캐릭터 추가
+        function addCharacter() {
+            const name = document.getElementById('character-name').value;
+            const grade = document.getElementById('character-grade').value;
+            const attribute = document.getElementById('character-attribute').value;
+            const position = document.getElementById('character-position').value;
+            const story = document.getElementById('character-story').value;
+            const combat = document.getElementById('character-combat').value;
+            const equipment = document.getElementById('character-equipment').value;
+            const skills = document.getElementById('character-skills').value;
+            const imageUrl = document.getElementById('character-image-url').value;
+            
+            if (!name || !grade || !attribute || !position || !story || !combat || !equipment || !skills || !imageUrl) {
+                alert('모든 필드를 채워주세요.');
+                return;
+            }
+            
+            const newCharacter = {
+                id: appData.characters.length > 0 ? Math.max(...appData.characters.map(c => c.id)) + 1 : 1,
+                name,
+                grade,
+                attribute,
+                position,
+                story,
+                combat,
+                equipment,
+                skills,
+                imageUrl
+            };
+            
+            appData.characters.push(newCharacter);
+            renderCharacters();
+            resetCharacterForm();
+            alert('캐릭터가 추가되었습니다.');
+        }
+
+        // 캐릭터 업데이트
+        function updateCharacter() {
+            const name = document.getElementById('character-name').value;
+            const grade = document.getElementById('character-grade').value;
+            const attribute = document.getElementById('character-attribute').value;
+            const position = document.getElementById('character-position').value;
+            const story = document.getElementById('character-story').value;
+            const combat = document.getElementById('character-combat').value;
+            const equipment = document.getElementById('character-equipment').value;
+            const skills = document.getElementById('character-skills').value;
+            const imageUrl = document.getElementById('character-image-url').value;
+            
+            if (!name || !grade || !attribute || !position || !story || !combat || !equipment || !skills || !imageUrl) {
+                alert('모든 필드를 채워주세요.');
+                return;
+            }
+            
+            const charIndex = appData.characters.findIndex(c => c.id === appData.editingCharacterId);
+            
+            if (charIndex !== -1) {
+                appData.characters[charIndex] = {
+                    ...appData.characters[charIndex],
+                    name,
+                    grade,
+                    attribute,
+                    position,
+                    story,
+                    combat,
+                    equipment,
+                    skills,
+                    imageUrl
+                };
+                
+                renderCharacters();
+                resetCharacterForm();
+                alert('캐릭터 정보가 업데이트되었습니다.');
+            }
+        }
+
+        // 캐릭터 삭제
+        function deleteCharacter() {
+            if (confirm('정말로 이 캐릭터를 삭제하시겠습니까?')) {
+                appData.characters = appData.characters.filter(c => c.id !== appData.editingCharacterId);
+                renderCharacters();
+                resetCharacterForm();
+                alert('캐릭터가 삭제되었습니다.');
+            }
+        }
+
+        // 새로운 기능 추가
+        function addFeature() {
+            const name = document.getElementById('feature-name').value;
+            const description = document.getElementById('feature-description').value;
+            
+            if (!name || !description) {
+                alert('모든 필드를 채워주세요.');
+                return;
+            }
+            
+            const newFeature = {
+                id: appData.features.length > 0 ? Math.max(...appData.features.map(f => f.id)) + 1 : 1,
+                name,
+                description
+            };
+            
+            appData.features.push(newFeature);
+            alert('새로운 기능이 추가되었습니다.');
+            
+            // 여기서는 간단하게 알림만 표시하고 실제로 기능을 추가하지는 않음
+            // 실제 구현에서는 기능을 동적으로 추가하는 로직이 필요
+        }
+
+        // 데이터 저장
+        function saveData() {
+            localStorage.setItem('resonanceGameData', JSON.stringify(appData));
+            alert('데이터가 로컬 저장소에 저장되었습니다.');
+        }
+
+        // 데이터 내보내기
+        function exportData() {
+            const dataStr = JSON.stringify(appData, null, 2);
+            const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
+            
+            const exportFileDefaultName = 'resonance-game-data.json';
+            
+            const linkElement = document.createElement('a');
+            linkElement.setAttribute('href', dataUri);
+            linkElement.setAttribute('download', exportFileDefaultName);
+            linkElement.click();
+        }
+
+        // 드래그 앤 드롭 핸들러
+        let draggedItem = null;
+
+        function handleDragStart(e) {
+            if (!appData.currentUser) return;
+            
+            if (e.target.classList.contains('patch-card')) {
+                draggedItem = e.target;
+                e.target.style.opacity = '0.5';
+                e.dataTransfer.effectAllowed = 'move';
+                e.dataTransfer.setData('text/html', e.target.innerHTML);
+            }
+        }
+
+        function handleDragOver(e) {
+            if (!appData.currentUser) return;
+            
+            e.preventDefault();
+            if (e.target.classList.contains('patch-card') || e.target.closest('.patch-card')) {
+                const targetCard = e.target.classList.contains('patch-card') 
+                    ? e.target 
+                    : e.target.closest('.patch-card');
+                
+                const rect = targetCard.getBoundingClientRect();
                 const midpoint = rect.top + rect.height / 2;
                 
                 if (e.clientY < midpoint) {
-                    container.insertBefore(currentDraggedElement, this);
+                    targetCard.parentNode.insertBefore(draggedItem, targetCard);
                 } else {
-                    container.insertBefore(currentDraggedElement, this.nextSibling);
+                    targetCard.parentNode.insertBefore(draggedItem, targetCard.nextSibling);
                 }
             }
-            
-            return false;
         }
+
+        function handleDrop(e) {
+            if (!appData.currentUser) return;
+            
+            e.stopPropagation();
+            e.preventDefault();
+            
+            if (draggedItem) {
+                draggedItem.style.opacity = '1';
+                
+                // 데이터 순서 업데이트
+                const patchIds = Array.from(document.querySelectorAll('.patch-card')).map(card => parseInt(card.dataset.id));
+                const newPatches = [];
+                
+                patchIds.forEach(id => {
+                    const patch = appData.patches.find(p => p.id === id);
+                    if (patch) newPatches.push(patch);
+                });
+                
+                appData.patches = newPatches;
+            }
+        }
+
+        function handleDragEnd() {
+            if (!appData.currentUser) return;
+            
+            if (draggedItem) {
+                draggedItem.style.opacity = '1';
+                draggedItem = null;
+            }
+        }
+
+        // 초기화 실행
+        init();
     </script>
 </body>
 </html>
