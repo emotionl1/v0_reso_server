@@ -1318,80 +1318,58 @@
             elements.patchList.addEventListener('dragend', handleDragEnd);
         }
 
-        // 강화 계산
-        function calculateEnhancement() {
-            const grade = document.getElementById('equipment-grade').value;
-            const type = document.getElementById('equipment-type').value;
-            const currentLevel = parseInt(document.getElementById('current-level').value);
-            const targetLevel = parseInt(document.getElementById('target-level').value);
-            
-            // 유효성 검사
-            if (currentLevel >= targetLevel) {
-                alert('목표 레벨은 현재 레벨보다 높아야 합니다.');
-                return;
-            }
-            
-            if (currentLevel < 1 || targetLevel > 70) {
-                alert('레벨은 1에서 70 사이여야 합니다.');
-                return;
-            }
-            
-            // 경험치 계산
-            const expData = enhancementData[grade][type].exp;
-            let totalExp = 0;
-            
-            for (let i = currentLevel; i < targetLevel; i++) {
-                totalExp += expData[i];
-            }
-            
-            // 골드 계산
-            const goldData = enhancementData[grade][type].gold;
-            let totalGold = 0;
-            
-            for (let i = currentLevel; i < targetLevel; i++) {
-                totalGold += goldData[i];
-            }
-            
-            // 재료 계산
-            const materials = {
-                '8ti': Math.floor(totalExp / 4000),
-                '4ti': Math.floor((totalExp % 4000) / 2000),
-                '2ti': Math.floor((totalExp % 2000) / 1000),
-                '1ti': Math.floor((totalExp % 1000) / 500)
-            };
-            
-            // 결과 표시
-            document.getElementById('total-exp').textContent = totalExp.toLocaleString();
-            document.getElementById('total-gold').textContent = totalGold.toLocaleString();
-            document.getElementById('material-8ti').textContent = materials['8ti'];
-            document.getElementById('material-4ti').textContent = materials['4ti'];
-            document.getElementById('material-2ti').textContent = materials['2ti'];
-            document.getElementById('material-1ti').textContent = materials['1ti'];
-        }
-
-        // 경험치 테이블 생성
-        function generateExpTable() {
-            const tbody = elements.expTableBody;
-            tbody.innerHTML = '';
-            
-            for (let i = 0; i < 70; i++) {
-                const row = document.createElement('tr');
-                
-                row.innerHTML = `
-                    <td>${i + 1}</td>
-                    <td>${enhancementData.UR.weapon.exp[i]}</td>
-                    <td>${enhancementData.UR.accessory.exp[i]}</td>
-                    <td>${enhancementData.SSR.weapon.exp[i]}</td>
-                    <td>${enhancementData.SSR.accessory.exp[i]}</td>
-                    <td>${enhancementData.SR.weapon.exp[i]}</td>
-                    <td>${enhancementData.SR.accessory.exp[i]}</td>
-                    <td>${enhancementData.R.weapon.exp[i]}</td>
-                    <td>${enhancementData.R.accessory.exp[i]}</td>
-                `;
-                
-                tbody.appendChild(row);
-            }
-        }
+       // 강화 계산
+function calculateEnhancement() {
+    const grade = document.getElementById('equipment-grade').value;
+    const type = document.getElementById('equipment-type').value;
+    const currentLevel = parseInt(document.getElementById('current-level').value);
+    const targetLevel = parseInt(document.getElementById('target-level').value);
+    
+    // 유효성 검사
+    if (currentLevel >= targetLevel) {
+        alert('목표 레벨은 현재 레벨보다 높아야 합니다.');
+        return;
+    }
+    
+    if (currentLevel < 1 || targetLevel > 70) {
+        alert('레벨은 1에서 70 사이여야 합니다.');
+        return;
+    }
+    
+    // 경험치 계산 (1->2 레벨부터 시작하도록 수정)
+    const expData = enhancementData[grade][type].exp;
+    let totalExp = 0;
+    
+    // currentLevel-1부터 targetLevel-1까지 계산 (배열은 0부터 시작)
+    for (let i = currentLevel - 1; i < targetLevel - 1; i++) {
+        totalExp += expData[i];
+    }
+    
+    // 골드 계산 (1->2 레벨부터 시작하도록 수정)
+    const goldData = enhancementData[grade][type].gold;
+    let totalGold = 0;
+    
+    // currentLevel-1부터 targetLevel-1까지 계산 (배열은 0부터 시작)
+    for (let i = currentLevel - 1; i < targetLevel - 1; i++) {
+        totalGold += goldData[i];
+    }
+    
+    // 재료 계산
+    const materials = {
+        '8ti': Math.floor(totalExp / 4000),
+        '4ti': Math.floor((totalExp % 4000) / 2000),
+        '2ti': Math.floor((totalExp % 2000) / 1000),
+        '1ti': Math.floor((totalExp % 1000) / 500)
+    };
+    
+    // 결과 표시
+    document.getElementById('total-exp').textContent = totalExp.toLocaleString();
+    document.getElementById('total-gold').textContent = totalGold.toLocaleString();
+    document.getElementById('material-8ti').textContent = materials['8ti'];
+    document.getElementById('material-4ti').textContent = materials['4ti'];
+    document.getElementById('material-2ti').textContent = materials['2ti'];
+    document.getElementById('material-1ti').textContent = materials['1ti'];
+}
 
         // 패치 유형 이름 가져오기
         function getTypeName(type) {
