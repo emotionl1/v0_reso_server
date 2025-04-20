@@ -827,116 +827,60 @@
         </div>
     </div>
 
-    <!-- 관리자 패널 -->
-    <div class="admin-panel">
-        <button class="admin-btn" id="admin-btn">⚙️</button>
-        <div class="admin-tools" id="admin-tools">
-            <button class="tool-btn" id="edit-patch-btn">패치노트 수정</button>
-            <button class="tool-btn" id="edit-character-btn">캐릭터 정보 수정</button>
+   <!-- 관리자 패널 구조 수정 -->
+<div class="admin-panel">
+    <button class="admin-btn" id="admin-btn">⚙️</button>
+    <div class="admin-tools" id="admin-tools">
+        <!-- 메인 메뉴 -->
+        <div class="admin-main-menu" id="admin-main-menu">
+            <h3>관리자 메뉴</h3>
+            <button class="tool-btn" id="edit-patch-btn">패치노트 관리</button>
+            <button class="tool-btn" id="edit-character-btn">캐릭터 정보 관리</button>
             <button class="tool-btn" id="add-feature-btn">새로운 기능 추가</button>
             <button class="tool-btn" id="save-data-btn">정보 저장하기</button>
             <button class="tool-btn" id="export-data-btn">정보 내보내기</button>
             <button class="tool-btn" id="logout-btn">로그아웃</button>
-            
-            <!-- 패치노트 수정 섹션 -->
-            <div class="edit-section" id="edit-patch-section">
-                <h3>패치노트 수정</h3>
-                <div class="form-group">
-                    <label for="patch-title">제목</label>
-                    <input type="text" id="patch-title" placeholder="예: v1.4 업데이트">
-                </div>
-                <div class="form-group">
-                    <label for="patch-date">날짜</label>
-                    <input type="date" id="patch-date">
-                </div>
-                <div class="form-group">
-                    <label for="patch-type">유형</label>
-                    <select id="patch-type">
-                        <option value="character">캐릭터 업데이트</option>
-                        <option value="balance">밸런스 조정</option>
-                        <option value="resource">리소스 패치</option>
-                        <option value="event">이벤트</option>
-                        <option value="other">기타</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label for="patch-summary">요약</label>
-                    <textarea id="patch-summary" rows="3" placeholder="간략한 요약을 입력하세요"></textarea>
-                </div>
-                <div class="form-group">
-                    <label for="patch-details">상세 내용</label>
-                    <textarea id="patch-details" rows="5" placeholder="상세 내용을 입력하세요"></textarea>
-                </div>
-                <button id="add-patch-btn">패치 추가</button>
-                <button id="update-patch-btn" style="display: none;">패치 업데이트</button>
-                <button id="delete-patch-btn" style="background-color: var(--danger-color); display: none;">패치 삭제</button>
+        </div>
+        
+        <!-- 패치노트 관리 섹션 -->
+        <div class="edit-section" id="edit-patch-section">
+            <div class="admin-header">
+                <button class="back-btn" id="back-from-patch">← 뒤로</button>
+                <h3>패치노트 관리</h3>
             </div>
-            
-            <!-- 캐릭터 정보 수정 섹션 -->
-            <div class="edit-section" id="edit-character-section">
-                <h3>캐릭터 정보 수정</h3>
-                <div class="form-group">
-                    <label for="character-name">이름</label>
-                    <input type="text" id="character-name" placeholder="�릭터 이름">
-                </div>
-                <div class="form-group">
-                    <label for="character-grade">등급</label>
-                    <select id="character-grade">
-                        <option value="UR">UR</option>
-                        <option value="SSR">SSR</option>
-                        <option value="SR">SR</option>
-                        <option value="R">R</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label for="character-attribute">속성</label>
-                    <input type="text" id="character-attribute" placeholder="예: 불, 물, 바람 등">
-                </div>
-                <div class="form-group">
-                    <label for="character-position">포지션</label>
-                    <input type="text" id="character-position" placeholder="예: 딜러, 서포터, 탱커 등">
-                </div>
-                <div class="form-group">
-                    <label for="character-story">스토리</label>
-                    <textarea id="character-story" rows="3" placeholder="캐릭터 배경 스토리"></textarea>
-                </div>
-                <div class="form-group">
-                    <label for="character-combat">전투 스타일</label>
-                    <textarea id="character-combat" rows="3" placeholder="전투 스타일 설명"></textarea>
-                </div>
-                <div class="form-group">
-                    <label for="character-equipment">추천 장비</label>
-                    <textarea id="character-equipment" rows="3" placeholder="추천 장비 설명"></textarea>
-                </div>
-                <div class="form-group">
-                    <label for="character-skills">스킬 정보</label>
-                    <textarea id="character-skills" rows="3" placeholder="스킬 정보 설명"></textarea>
-                </div>
-                <div class="form-group">
-                    <label for="character-image-url">이미지 URL</label>
-                    <input type="text" id="character-image-url" placeholder="썸네일 이미지 URL">
-                </div>
-                <button id="add-character-btn">캐릭터 추가</button>
-                <button id="update-character-btn" style="display: none;">캐릭터 업데이트</button>
-                <button id="delete-character-btn" style="background-color: var(--danger-color); display: none;">캐릭터 삭제</button>
+            <div class="patch-list-admin">
+                <!-- 기존 패치노트 목록 -->
             </div>
-            
-            <!-- 새로운 기능 추가 섹션 -->
-            <div class="edit-section" id="add-feature-section">
-                <h3>새로운 기능 추가</h3>
-                <div class="form-group">
-                    <label for="feature-name">기능 이름</label>
-                    <input type="text" id="feature-name" placeholder="예: 장비 도감">
-                </div>
-                <div class="form-group">
-                    <label for="feature-description">기능 설명</label>
-                    <textarea id="feature-description" rows="3" placeholder="기능에 대한 설명을 입력하세요"></textarea>
-                </div>
-                <button id="add-feature-submit">기능 추가</button>
+            <div class="patch-form">
+                <!-- 패치노트 입력 폼 -->
             </div>
         </div>
+        
+        <!-- 캐릭터 정보 관리 섹션 -->
+        <div class="edit-section" id="edit-character-section">
+            <div class="admin-header">
+                <button class="back-btn" id="back-from-character">← 뒤로</button>
+                <h3>캐릭터 정보 관리</h3>
+            </div>
+            <div class="character-list-admin">
+                <!-- 기존 캐릭터 목록 -->
+            </div>
+            <div class="character-form">
+                <!-- 캐릭터 입력 폼 -->
+            </div>
+        </div>
+        
+        <!-- 새로운 기능 추가 섹션 -->
+        <div class="edit-section" id="add-feature-section">
+            <div class="admin-header">
+                <button class="back-btn" id="back-from-feature">← 뒤로</button>
+                <h3>새로운 기능 추가</h3>
+            </div>
+            <!-- 기능 추가 폼 -->
+        </div>
     </div>
-
+</div>
+    
     <script>
         // 데이터 저장소
         const appData = {
@@ -1690,6 +1634,104 @@ function calculateEnhancement() {
 
         // 초기화 실행
         init();
+
+        
+        // 관리자 패널 기능 확장
+function setupAdminPanel() {
+    // 뒤로 가기 버튼 기능
+    document.getElementById('back-from-patch').addEventListener('click', () => {
+        showAdminMainMenu();
+    });
+    
+    document.getElementById('back-from-character').addEventListener('click', () => {
+        showAdminMainMenu();
+    });
+    
+    document.getElementById('back-from-feature').addEventListener('click', () => {
+        showAdminMainMenu();
+    });
+
+    // 기존 패치노트 수정 기능
+    document.querySelectorAll('.patch-list-admin .patch-item').forEach(item => {
+        item.addEventListener('click', function() {
+            const patchId = this.dataset.id;
+            loadPatchForEdit(patchId);
+        });
+    });
+
+    // 기존 캐릭터 수정 기능
+    document.querySelectorAll('.character-list-admin .character-item').forEach(item => {
+        item.addEventListener('click', function() {
+            const charId = this.dataset.id;
+            loadCharacterForEdit(charId);
+        });
+    });
+}
+
+// 메인 메뉴 표시
+function showAdminMainMenu() {
+    document.querySelectorAll('.edit-section').forEach(section => {
+        section.classList.remove('show');
+    });
+    document.getElementById('admin-main-menu').classList.add('show');
+}
+
+// 패치노트 수정을 위해 로드
+function loadPatchForEdit(patchId) {
+    const patch = appData.patches.find(p => p.id == patchId);
+    if (patch) {
+        document.getElementById('patch-title').value = patch.title;
+        document.getElementById('patch-date').value = patch.date;
+        document.getElementById('patch-type').value = patch.type;
+        document.getElementById('patch-summary').value = patch.summary;
+        document.getElementById('patch-details').value = patch.details;
+        
+        document.getElementById('add-patch-btn').style.display = 'none';
+        document.getElementById('update-patch-btn').style.display = 'block';
+        document.getElementById('delete-patch-btn').style.display = 'block';
+        
+        appData.editingPatchId = patchId;
+        
+        document.getElementById('edit-patch-section').classList.add('show');
+        document.getElementById('admin-main-menu').classList.remove('show');
+    }
+}
+
+// 캐릭터 수정을 위해 로드
+function loadCharacterForEdit(charId) {
+    const character = appData.characters.find(c => c.id == charId);
+    if (character) {
+        document.getElementById('character-name').value = character.name;
+        document.getElementById('character-grade').value = character.grade;
+        document.getElementById('character-attribute').value = character.attribute;
+        document.getElementById('character-position').value = character.position;
+        document.getElementById('character-story').value = character.story;
+        document.getElementById('character-combat').value = character.combat;
+        document.getElementById('character-equipment').value = character.equipment;
+        document.getElementById('character-skills').value = character.skills;
+        document.getElementById('character-image-url').value = character.imageUrl;
+        
+        document.getElementById('add-character-btn').style.display = 'none';
+        document.getElementById('update-character-btn').style.display = 'block';
+        document.getElementById('delete-character-btn').style.display = 'block';
+        
+        appData.editingCharacterId = charId;
+        
+        document.getElementById('edit-character-section').classList.add('show');
+        document.getElementById('admin-main-menu').classList.remove('show');
+    }
+}
+
+// 초기화 시 관리자 패널 설정 추가
+function init() {
+    renderPatches();
+    renderCharacters();
+    setupEventListeners();
+    generateExpTable();
+    setupAdminPanel(); // 추가된 부분
+}
     </script>
+
+            
 </body>
 </html>
