@@ -119,26 +119,27 @@
             </div>
 
             <!-- 새 기능 추가 패널 -->
-            <div id="new-feature-panel" class="admin-panel">
-                <h2>새 기능 추가</h2>
-                <div class="admin-new-feature">
-                    <div class="input-group">
-                        <label for="new-feature-name">기능 이름</label>
-                        <input type="text" id="new-feature-name" placeholder="예: 장비 도감">
-                    </div>
-                    <div class="input-group">
-                        <label for="new-feature-desc">기능 설명</label>
-                        <textarea id="new-feature-desc" rows="3" placeholder="기능에 대한 간단한 설명"></textarea>
-                    </div>
-                    <div class="input-group">
-                        <label for="new-feature-icon">아이콘 (Font Awesome 클래스)</label>
-                        <input type="text" id="new-feature-icon" placeholder="예: fa-book">
-                    </div>
-                    <button id="add-feature-btn" class="btn">기능 추가</button>
-                </div>
-            </div>
-        </main>
+<div id="new-feature-panel" class="admin-panel">
+    <h2>새 정보 칸 생성</h2>
+    <div class="admin-new-feature">
+        <div class="input-group">
+            <label for="feature-type">정보 유형 선택</label>
+            <select id="feature-type">
+                <option value="info-card">정보 카드</option>
+                <option value="image-gallery">이미지 갤러리</option>
+                <option value="data-table">데이터 테이블</option>
+            </select>
+        </div>
+        
+        <div id="feature-form-container">
+            <!-- 동적으로 폼이 로드됩니다 -->
+        </div>
+        
+        <div id="feature-preview" class="feature-preview">
+            <!-- 생성할 콘텐츠 미리보기 -->
+        </div>
     </div>
+</div>
 
     <!-- 패치노트 편집 모달 -->
     <div id="patch-edit-modal" class="admin-modal">

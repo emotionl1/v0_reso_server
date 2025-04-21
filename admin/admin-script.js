@@ -60,6 +60,181 @@ function setupAdminLogin() {
     });
 }
 
+// 드래그 앤 드롭 기능 추가
+function setupDragAndDrop() {
+    // 패치노트 드래그 앤 드롭
+    const patchList = document.getElementById('admin-patch-list');
+    new Sortable(patchList, {
+        animation: 150,
+        handle: '.admin-patch-card',
+        onEnd: function() {
+            // 순서 변경을 gameData에 반영
+            const newOrder = Array.from(patchList.children).map(el => {
+                return gameData.patchNotes.find(p => p.id === parseInt(el.querySelector('.edit-patch').dataset.id));
+            });
+            gameData.patchNotes = newOrder.filter(p => p);
+        }
+    });
+
+    // 캐릭터 드래그 앤 드롭
+    const characterList = document.getElementById('admin-character-list');
+    new Sortable(characterList, {
+        animation: 150,
+        handle: '.admin-character-card',
+        onEnd: function() {
+            // 순서 변경을 gameData에 반영
+            const newOrder = Array.from(characterList.children).map(el => {
+                return gameData.characters.find(c => c.id === parseInt(el.querySelector('.edit-character').dataset.id));
+            });
+            gameData.characters = newOrder.filter(c => c);
+        }
+    });
+}
+
+// 새 정보 칸 생성 기능
+function setupNewFeatureAdmin() {
+    const featureTypeSelect = document.getElementById('feature-type');
+    const formContainer = document.getElementById('feature-form-container');
+    const previewContainer = document.getElementById('feature-preview');
+
+    featureTypeSelect.addEventListener('change', function() {
+        const type = this.value;
+        let formHTML = '';
+
+        switch(type) {
+            case 'info-card':
+                formHTML = `
+                    <div class="input-group">
+                        <label for="info-title">제목</label>
+                        <input type="text" id="info-title" required>
+                    </div>
+                    <div class="input-group">
+                        <label for="info-content">내용</label>
+                        <textarea id="info-content" rows="5" required></textarea>
+                    </div>
+                    <div class="input-group">
+                        <label for="info-image">이미지 URL</label>
+                        <input type="text" id="info-image">
+                    </div>
+                    <button id="preview-info" class="btn">미리보기</button>
+                    <button id="save-info" class="btn primary">저장</button>
+                `;
+                break;
+
+            case 'image-gallery':
+                formHTML = `
+                    <div class="input-group">
+                        <label for="gallery-title">갤러리 제목</label>
+                        <input type="text" id="gallery-title" required>
+                    </div>
+                    <div class="input-group">
+                        <label for="gallery-images">이미지 URLs (한 줄에 하나씩)</label>
+                        <textarea id="gallery-images" rows="5" required></textarea>
+                    </div>
+                    <button id="preview-gallery" class="btn">미리보기</button>
+                    <button id="save-gallery" class="btn primary">저장</button>
+                `;
+                break;
+
+            case 'data-table':
+                formHTML = `
+                    <div class="input-group">
+                        <label for="table-title">테이블 제목</label>
+                        <input type="text" id="table-title" required>
+                    </div>
+                    <div class="input-group">
+                        <label for="table-headers">컬럼 헤더 (쉼표로 구분)</label>
+                        <input type="text" id="table-headers" required>
+                    </div>
+                    <div class="input-group">
+                        <label for="table-data">데이터 (한 줄에 하나의 행, 쉼표로 구분)</label>
+                        <textarea id="table-data" rows="5" required></textarea>
+                    </div>
+                    <button id="preview-table" class="btn">미리보기</button>
+                    <button id="save-table" class="btn primary">저장</button>
+                `;
+                break;
+        }
+
+        formContainer.innerHTML = formHTML;
+        previewContainer.innerHTML = '';
+
+        // 미리보기 및 저장 버튼 이벤트 바인딩
+        if (type === 'info-card') {
+            document.getElementById('preview-info').addEventListener('click', previewInfoCard);
+            document.getElementById('save-info').addEventListener('click', saveInfoCard);
+        } else if (type === 'image-gallery') {
+            document.getElementById('preview-gallery').addEventListener('click', previewGallery);
+            document.getElementById('save-gallery').addEventListener('click', saveGallery);
+        } else if (type === 'data-table') {
+            document.getElementById('preview-table').addEventListener('click', previewTable);
+            document.getElementById('save-table').addEventListener('click', saveTable);
+        }
+    });
+
+    // 초기 폼 로드
+    featureTypeSelect.dispatchEvent(new Event('change'));
+}
+
+// 정보 카드 미리보기
+function previewInfoCard() {
+    const previewContainer = document.getElementById('feature-preview');
+    const title = document.getElementById('info-title').value;
+    const content = document.getElementById('info-content').value;
+    const image = document.getElementById('info-image').value;
+
+    let previewHTML = `
+        <div class="info-card-preview">
+            <h3>${title}</h3>
+            ${image ? `<img src="${image}" alt="${title}" style="max-width: 100%; margin: 10px 0;">` : ''}
+            <p>${content.replace(/\n/g, '<br>')}</p>
+        </div>
+    `;
+
+    previewContainer.innerHTML = previewHTML;
+}
+
+// 정보 카드 저장
+function saveInfoCard() {
+    const title = document.getElementById('info-title').value;
+    const content = document.getElementById('info-content').value;
+    const image = document.getElementById('info-image').value;
+
+    if (!title || !content) {
+        alert('제목과 내용은 필수 입력 항목입니다.');
+        return;
+    }
+
+    // gameData에 infoCards 배열이 없으면 생성
+    if (!gameData.infoCards) {
+        gameData.infoCards = [];
+    }
+
+    // 새 정보 카드 추가
+    gameData.infoCards.push({
+        id: Date.now(),
+        type: 'info-card',
+        title: title,
+        content: content,
+        image: image
+    });
+
+    alert('정보 카드가 저장되었습니다!');
+}
+
+// 갤러리 미리보기 및 저장 함수들도 유사하게 구현...
+// 데이터 테이블 미리보기 및 저장 함수들도 유사하게 구현...
+
+// 관리자 패널 설정 함수에 드래그 앤 드롭 초기화 추가
+function setupAdminPanel() {
+    // 기존 코드...
+    
+    // 드래그 앤 드롭 초기화
+    setupDragAndDrop();
+    
+    // 기존 코드...
+}
+
 // 기존 코드에 다음 기능들을 추가합니다:
 
 // 1. 로그인 페이지 뒤로 가기 기능
