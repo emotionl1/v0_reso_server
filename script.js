@@ -2,12 +2,13 @@
 // 최종 구현 예시 (script.js)
 let currentDataVersion = 0;
 
+// 데이터 버전 확인
 function checkForUpdates() {
-    fetch('/api/data-version')
+    fetch('http://localhost:3000/api/data-version')
         .then(response => response.json())
         .then(data => {
             if (data.version > currentDataVersion) {
-                fetch('/api/get-data')
+                fetch('http://localhost:3000/api/get-data')
                     .then(response => response.json())
                     .then(updatedData => {
                         gameData = updatedData;
@@ -18,17 +19,18 @@ function checkForUpdates() {
         });
 }
 
-// 5초마다 업데이트 확인
-setInterval(checkForUpdates, 5000);
-
 // 초기 데이터 로드
-fetch('/api/get-data')
+fetch('http://localhost:3000/api/get-data')
     .then(response => response.json())
     .then(data => {
         gameData = data;
         currentDataVersion = data.version;
         initPage();
     });
+
+// 5초마다 업데이트 확인
+setInterval(checkForUpdates, 5000);
+
 
 function initPage() {
     // 기존 DOMContentLoaded 안에 있던 초기화 코드
