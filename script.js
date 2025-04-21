@@ -1,4 +1,42 @@
 // 데이터 (실제로는 서버에서 가져오거나 data.json 파일을 로드해야 함)
+// 최종 구현 예시 (script.js)
+let currentDataVersion = 0;
+
+function checkForUpdates() {
+    fetch('/api/data-version')
+        .then(response => response.json())
+        .then(data => {
+            if (data.version > currentDataVersion) {
+                fetch('/api/get-data')
+                    .then(response => response.json())
+                    .then(updatedData => {
+                        gameData = updatedData;
+                        currentDataVersion = data.version;
+                        updateUIOnDataChange();
+                    });
+            }
+        });
+}
+
+// 5초마다 업데이트 확인
+setInterval(checkForUpdates, 5000);
+
+// 초기 데이터 로드
+fetch('/api/get-data')
+    .then(response => response.json())
+    .then(data => {
+        gameData = data;
+        currentDataVersion = data.version;
+        initPage();
+    });
+
+function initPage() {
+    // 기존 DOMContentLoaded 안에 있던 초기화 코드
+    loadPatchNotes();
+    loadCharacters();
+    setupCalculator();
+    loadExpTables();
+}
 const gameData = {
     patchNotes: [
         {

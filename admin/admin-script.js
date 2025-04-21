@@ -1,3 +1,31 @@
+// 데이터 저장 함수 수정
+function saveDataToServer() {
+    fetch('/api/save-data', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + getAuthToken()
+        },
+        body: JSON.stringify(gameData)
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            alert('데이터가 성공적으로 저장되었습니다.');
+            // 버전 번호 증가
+            currentDataVersion = data.newVersion;
+        } else {
+            alert('데이터 저장 실패: ' + data.message);
+        }
+    });
+}
+
+// 모든 저장 동작에서 saveDataToServer() 호출
+function savePatchNote() {
+    // 기존 코드...
+    saveDataToServer();
+}
+
 // 관리자 패널 스크립트
 document.addEventListener('DOMContentLoaded', function() {
     // 로그인 페이지인 경우
