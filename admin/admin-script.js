@@ -1,6 +1,6 @@
-// 데이터 저장 함수 수정
+// 데이터 저장 함수
 function saveDataToServer() {
-    fetch('/api/save-data', {
+    fetch('http://localhost:3000/api/save-data', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -12,7 +12,6 @@ function saveDataToServer() {
     .then(data => {
         if (data.success) {
             alert('데이터가 성공적으로 저장되었습니다.');
-            // 버전 번호 증가
             currentDataVersion = data.newVersion;
         } else {
             alert('데이터 저장 실패: ' + data.message);
@@ -59,6 +58,115 @@ function setupAdminLogin() {
             loginError.textContent = '아이디 또는 비밀번호가 잘못되었습니다.';
         }
     });
+}
+
+// 기존 코드에 다음 기능들을 추가합니다:
+
+// 1. 로그인 페이지 뒤로 가기 기능
+if (document.getElementById('back-button')) {
+    document.getElementById('back-button').addEventListener('click', function() {
+        window.location.href = '../index.html';
+    });
+}
+
+// 2. 장비 정보 관리 기능 추가
+function setupNewFeatureAdmin() {
+    const addFeatureBtn = document.getElementById('add-feature-btn');
+    const featureTypeSelect = document.getElementById('feature-type-select');
+    const featureFormContainer = document.getElementById('feature-form-container');
+    
+    // 기능 유형 선택 이벤트
+    featureTypeSelect.addEventListener('change', function() {
+        const featureType = this.value;
+        let formHTML = '';
+        
+        switch(featureType) {
+            case 'equipment':
+                formHTML = `
+                    <div class="input-group">
+                        <label for="equip-name">장비 이름</label>
+                        <input type="text" id="equip-name" required>
+                    </div>
+                    <div class="input-group">
+                        <label for="equip-grade">등급</label>
+                        <select id="equip-grade" required>
+                            <option value="UR">UR</option>
+                            <option value="SSR">SSR</option>
+                            <option value="SR">SR</option>
+                            <option value="R">R</option>
+                        </select>
+                    </div>
+                    <div class="input-group">
+                        <label for="equip-type">유형</label>
+                        <select id="equip-type" required>
+                            <option value="weapon">무기</option>
+                            <option value="armor">방어구</option>
+                            <option value="accessory">악세서리</option>
+                        </select>
+                    </div>
+                    <div class="input-group">
+                        <label for="equip-stats">기본 스탯</label>
+                        <textarea id="equip-stats" rows="3" required placeholder="공격력 +100\n치명타 확률 +5%"></textarea>
+                    </div>
+                    <div class="input-group">
+                        <label for="equip-location">획득처</label>
+                        <textarea id="equip-location" rows="2" required placeholder="1. 레이드 '고대 신의 유적'\n2. 상점에서 1000 다이아로 구입"></textarea>
+                    </div>
+                    <div class="input-group">
+                        <label for="equip-image">이미지 URL</label>
+                        <input type="text" id="equip-image" required>
+                    </div>
+                    <button type="button" id="save-equipment" class="btn">장비 저장</button>
+                `;
+                break;
+                
+            case 'monster':
+                // 몬스터 정보 폼
+                break;
+                
+            default:
+                formHTML = '<p>선택한 기능 유형의 폼이 없습니다.</p>';
+        }
+        
+        featureFormContainer.innerHTML = formHTML;
+        
+        // 장비 저장 버튼 이벤트 바인딩
+        if (featureType === 'equipment' && document.getElementById('save-equipment')) {
+            document.getElementById('save-equipment').addEventListener('click', saveEquipment);
+        }
+    });
+    
+    // 초기 폼 로드
+    featureTypeSelect.dispatchEvent(new Event('change'));
+}
+
+// 장비 정보 저장 함수
+function saveEquipment() {
+    const equipmentData = {
+        id: Date.now(), // 임시 ID 생성
+        name: document.getElementById('equip-name').value,
+        grade: document.getElementById('equip-grade').value,
+        type: document.getElementById('equip-type').value,
+        stats: document.getElementById('equip-stats').value.split('\n').filter(line => line.trim()),
+        location: document.getElementById('equip-location').value.split('\n').filter(line => line.trim()),
+        image: document.getElementById('equip-image').value
+    };
+    
+    // gameData에 equipment 배열이 없으면 생성
+    if (!gameData.equipments) {
+        gameData.equipments = [];
+    }
+    
+    // 장비 추가
+    gameData.equipments.push(equipmentData);
+    
+    alert(`장비 "${equipmentData.name}"이(가) 추가되었습니다!`);
+    
+    // 폼 초기화
+    document.getElementById('equip-name').value = '';
+    document.getElementById('equip-stats').value = '';
+    document.getElementById('equip-location').value = '';
+    document.getElementById('equip-image').value = '';
 }
 
 // 관리자 패널 설정
