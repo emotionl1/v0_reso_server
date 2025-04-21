@@ -17,6 +17,36 @@
             <nav class="nav-menu">
                 <ul>
                     <li><button id="logout-btn">로그아웃</button></li>
+                    <li><button id="change-pw-btn">비밀번호 변경</button></li>
+                    <li><button id="back-to-main-btn">메인으로</button></li>
+                </ul>
+            </nav>
+            
+            <!-- 비밀번호 변경 모달 추가 -->
+            <div id="change-pw-modal" class="admin-modal">
+                <div class="admin-modal-content">
+                    <span class="close-admin-modal">&times;</span>
+                    <h3>비밀번호 변경</h3>
+                    <form id="change-pw-form">
+                        <div class="input-group">
+                            <label for="current-pw">현재 비밀번호</label>
+                            <input type="password" id="current-pw" required>
+                        </div>
+                        <div class="input-group">
+                            <label for="new-pw">새 비밀번호</label>
+                            <input type="password" id="new-pw" required>
+                        </div>
+                        <div class="input-group">
+                            <label for="confirm-pw">새 비밀번호 확인</label>
+                            <input type="password" id="confirm-pw" required>
+                        </div>
+                        <div class="form-actions">
+                            <button type="submit" class="btn">변경</button>
+                        </div>
+                        <p class="pw-change-error" id="pw-change-error"></p>
+                    </form>
+                </div>
+            </div>
                 </ul>
             </nav>
         </div>

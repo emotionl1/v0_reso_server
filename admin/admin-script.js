@@ -658,4 +658,126 @@ function setupDataActions() {
         };
         reader.readAsText(file);
     });
+    // 기존 코드에 다음 기능 추가
+
+// 로그아웃 버튼 클릭 이벤트
+document.getElementById('logout-btn').addEventListener('click', function() {
+    sessionStorage.removeItem('adminLoggedIn');
+    window.location.href = '../index.html'; // 메인 화면으로 이동
+});
+
+// 메인으로 버튼 클릭 이벤트
+document.getElementById('back-to-main-btn').addEventListener('click', function() {
+    window.location.href = '../index.html'; // 메인 화면으로 이동
+});
+
+// 비밀번호 변경 버튼 클릭 이벤트
+document.getElementById('change-pw-btn').addEventListener('click', function() {
+    document.getElementById('change-pw-modal').style.display = 'block';
+});
+
+// 비밀번호 변경 모달 닫기
+document.querySelector('#change-pw-modal .close-admin-modal').addEventListener('click', function() {
+    document.getElementById('change-pw-modal').style.display = 'none';
+});
+
+// 비밀번호 변경 폼 제출
+document.getElementById('change-pw-form').addEventListener('submit', function(e) {
+    e.preventDefault();
+    
+    const currentPw = document.getElementById('current-pw').value;
+    const newPw = document.getElementById('new-pw').value;
+    const confirmPw = document.getElementById('confirm-pw').value;
+    const errorElement = document.getElementById('pw-change-error');
+    
+    // 간단한 유효성 검사 (실제로는 서버와의 통신 필요)
+    if (currentPw !== 'admin123') {
+        errorElement.textContent = '현재 비밀번호가 일치하지 않습니다.';
+        return;
+    }
+    
+    if (newPw !== confirmPw) {
+        errorElement.textContent = '새 비밀번호가 일치하지 않습니다.';
+        return;
+    }
+    
+    if (newPw.length < 6) {
+        errorElement.textContent = '비밀번호는 6자리 이상이어야 합니다.';
+        return;
+    }
+    
+    // 비밀번호 변경 성공 (실제로는 서버에 변경 요청 필요)
+    errorElement.textContent = '';
+    alert('비밀번호가 성공적으로 변경되었습니다.');
+    document.getElementById('change-pw-modal').style.display = 'none';
+    this.reset();
+});
+
+// 뒤로 가기 기능 (브라우저 히스토리)
+function setupBackButton() {
+    // 패널 전환 시 히스토리 추가
+    document.querySelectorAll('.admin-menu-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            const panelId = this.dataset.panel;
+            history.pushState({ panel: panelId }, '', `#${panelId}`);
+        });
+    });
+    
+    // 히스토리 변경 감지
+    window.addEventListener('popstate', function(e) {
+        if (e.state && e.state.panel) {
+            // 모든 버튼 비활성화
+            document.querySelectorAll('.admin-menu-btn').forEach(b => {
+                b.classList.remove('active');
+            });
+            
+            // 해당 패널 버튼 활성화
+            const activeBtn = document.querySelector(`.admin-menu-btn[data-panel="${e.state.panel}"]`);
+            if (activeBtn) {
+                activeBtn.classList.add('active');
+            }
+            
+            // 모든 패널 숨기기
+            document.querySelectorAll('.admin-panel').forEach(panel => {
+                panel.classList.remove('active');
+            });
+            
+            // 해당 패널 보이기
+            document.getElementById(e.state.panel).classList.add('active');
+        }
+    });
+    
+    // 초기 상태 설정
+    if (window.location.hash) {
+        const panelId = window.location.hash.substring(1);
+        const panel = document.getElementById(panelId);
+        if (panel) {
+            // 모든 패널 숨기기
+            document.querySelectorAll('.admin-panel').forEach(p => {
+                p.classList.remove('active');
+            });
+            
+            // 해당 패널 보이기
+            panel.classList.add('active');
+            
+            // 모든 버튼 비활성화
+            document.querySelectorAll('.admin-menu-btn').forEach(b => {
+                b.classList.remove('active');
+            });
+            
+            // 해당 버튼 활성화
+            const btn = document.querySelector(`.admin-menu-btn[data-panel="${panelId}"]`);
+            if (btn) {
+                btn.classList.add('active');
+            }
+        }
+    }
+}
+
+// DOM 로드 시 setupBackButton() 호출 추가
+document.addEventListener('DOMContentLoaded', function() {
+    // 기존 코드...
+    setupBackButton();
+});
+
 }
