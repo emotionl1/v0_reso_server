@@ -1,0 +1,617 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>레조넌스 게임 정보</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <!-- 상단 고정 헤더 -->
+    <header id="header">
+        <div class="container">
+            <div class="logo">레조넌스</div>
+            <nav>
+                <ul>
+                    <li><a href="#patch-notes">패치노트</a></li>
+                    <li><a href="#calculator">강화 계산기</a></li>
+                    <li><a href="#character-info">캐릭터 정보</a></li>
+                    <li><a href="#urban-dev">도시 발전도</a></li>
+                    <li><a href="#footer">맨 아래로</a></li>
+                    <li><a href="login.html" class="admin-link">관리자 패널</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- 메인 컨텐츠 -->
+    <main>
+        <!-- 강화 계산기 섹션 -->
+        <section id="calculator" class="section">
+            <div class="container">
+                <h2>강화 계산기</h2>
+                <p class="section-description">장비를 원하는 단계까지 강화할 때 필요한 경험치 및 재료 소비량을 계산해보세요!</p>
+                
+                <div class="calculator-container">
+                    <div class="calculator-form">
+                        <div class="form-group">
+                            <label for="equipment-grade">장비 등급</label>
+                            <select id="equipment-grade">
+                                <option value="UR">UR</option>
+                                <option value="SSR">SSR</option>
+                                <option value="SR">SR</option>
+                                <option value="R">R</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="equipment-type">장비 유형</label>
+                            <select id="equipment-type">
+                                <option value="weapon">무기/방어구</option>
+                                <option value="accessory">악세서리</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="current-level">현재 강화 레벨</label>
+                            <input type="number" id="current-level" min="1" max="70" value="1">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="target-level">목표 강화 레벨</label>
+                            <input type="number" id="target-level" min="2" max="70" value="10">
+                        </div>
+                        
+                        <button id="calculate-btn" class="btn">계산하기</button>
+                        <button id="show-table-btn" class="btn secondary">경험치 표 보기</button>
+                    </div>
+                    
+                    <div class="calculator-result">
+                        <h3>계산 결과</h3>
+                        <div class="result-item">
+                            <span class="result-label">총 필요 경험치:</span>
+                            <span id="total-exp" class="result-value">0</span>
+                        </div>
+                        <div class="result-item">
+                            <span class="result-label">소모 골드:</span>
+                            <span id="total-gold" class="result-value">0</span>
+                        </div>
+                        <div class="result-item">
+                            <span class="result-label">필요한 재료:</span>
+                            <div class="materials-list">
+                                <div class="material-item">
+                                    <span>성운상 물질(8Ti):</span>
+                                    <span id="material-8ti">0</span>
+                                </div>
+                                <div class="material-item">
+                                    <span>성운상 물질(4Ti):</span>
+                                    <span id="material-4ti">0</span>
+                                </div>
+                                <div class="material-item">
+                                    <span>성운상 물질(2Ti):</span>
+                                    <span id="material-2ti">0</span>
+                                </div>
+                                <div class="material-item">
+                                    <span>성운상 물질(1Ti):</span>
+                                    <span id="material-1ti">0</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 경험치 표 (초기에는 숨겨짐) -->
+                <div id="exp-table-container" class="hidden">
+                    <h3>등급별 경험치 요구량</h3>
+                    <div class="table-controls">
+                        <button class="btn small active" data-table="UR">UR</button>
+                        <button class="btn small" data-table="SSR">SSR</button>
+                        <button class="btn small" data-table="SR">SR</button>
+                        <button class="btn small" data-table="R">R</button>
+                    </div>
+                    <div class="exp-tables">
+                        <div id="UR-table" class="exp-table">
+                            <h4>무기/방어구</h4>
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>레벨</th>
+                                        <th>경험치</th>
+                                        <th>골드</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="UR-weapon-body"></tbody>
+                            </table>
+                            
+                            <h4>악세서리</h4>
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>레벨</th>
+                                        <th>경험치</th>
+                                        <th>골드</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="UR-accessory-body"></tbody>
+                            </table>
+                        </div>
+                        
+                        <div id="SSR-table" class="exp-table hidden">
+                            <h4>무기/방어구</h4>
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>레벨</th>
+                                        <th>경험치</th>
+                                        <th>골드</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="SSR-weapon-body"></tbody>
+                            </table>
+                            
+                            <h4>악세서리</h4>
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>레벨</th>
+                                        <th>경험치</th>
+                                        <th>골드</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="SSR-accessory-body"></tbody>
+                            </table>
+                        </div>
+                        
+                        <div id="SR-table" class="exp-table hidden">
+                            <h4>무기/방어구</h4>
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>레벨</th>
+                                        <th>경험치</th>
+                                        <th>골드</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="SR-weapon-body"></tbody>
+                            </table>
+                            
+                            <h4>악세서리</h4>
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>레벨</th>
+                                        <th>경험치</th>
+                                        <th>골드</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="SR-accessory-body"></tbody>
+                            </table>
+                        </div>
+                        
+                        <div id="R-table" class="exp-table hidden">
+                            <h4>무기/방어구</h4>
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>레벨</th>
+                                        <th>경험치</th>
+                                        <th>골드</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="R-weapon-body"></tbody>
+                            </table>
+                            
+                            <h4>악세서리</h4>
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>레벨</th>
+                                        <th>경험치</th>
+                                        <th>골드</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="R-accessory-body"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 패치노트 섹션 -->
+        <section id="patch-notes" class="section">
+            <div class="container">
+                <h2>패치노트</h2>
+                <p class="section-description">최신 업데이트 내용과 변경사항을 빠르게 확인해보세요.</p>
+                
+                <div class="filter-tabs">
+                    <button class="tab-btn active" data-filter="all">전체</button>
+                    <button class="tab-btn" data-filter="character">캐릭터 업데이트</button>
+                    <button class="tab-btn" data-filter="balance">밸런스 조정</button>
+                    <button class="tab-btn" data-filter="resource">리소스 패치</button>
+                </div>
+                
+                <div class="patch-notes-container">
+                    <!-- 패치노트 카드들이 여기에 동적으로 로드됩니다 -->
+                    <div class="patch-card" data-category="character">
+                        <div class="patch-header">
+                            <h3>v1.4 업데이트</h3>
+                            <span class="patch-date">2023-11-15</span>
+                        </div>
+                        <div class="patch-summary">
+                            새로운 캐릭터 2종 추가 및 기존 캐릭터 밸런스 조정
+                        </div>
+                        <button class="detail-btn">자세히 보기</button>
+                        <div class="patch-details hidden">
+                            <ul>
+                                <li>신규 캐릭터 "라비린스" 추가 (UR 등급, 얼음 속성)</li>
+                                <li>신규 캐릭터 "제피로스" 추가 (SSR 등급, 바람 속성)</li>
+                                <li>캐릭터 "이그니스" 스킬 효과 상향 조정</li>
+                                <li>캐릭터 "아쿠아리우스" 궁극기 쿨타임 5초 증가</li>
+                                <li>일부 UI 개선 및 버그 수정</li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <div class="patch-card" data-category="balance">
+                        <div class="patch-header">
+                            <h3>v1.3.5 핫픽스</h3>
+                            <span class="patch-date">2023-10-28</span>
+                        </div>
+                        <div class="patch-summary">
+                            PVP 밸런스 조정 및 버그 수정
+                        </div>
+                        <button class="detail-btn">자세히 보기</button>
+                        <div class="patch-details hidden">
+                            <ul>
+                                <li>PVP에서 특정 스킬 연계가 지나치게 강력한 문제 수정</li>
+                                <li>일부 캐릭터의 스킬 계수 조정</li>
+                                <li>아이템 드롭률 버그 수정</li>
+                                <li>서버 안정성 개선</li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <div class="patch-card" data-category="resource">
+                        <div class="patch-header">
+                            <h3>v1.3 업데이트</h3>
+                            <span class="patch-date">2023-10-10</span>
+                        </div>
+                        <div class="patch-summary">
+                            신규 지역 추가 및 이벤트 업데이트
+                        </div>
+                        <button class="detail-btn">자세히 보기</button>
+                        <div class="patch-details hidden">
+                            <ul>
+                                <li>신규 지역 "폭풍의 협곡" 추가</li>
+                                <li>할로윈 이벤트 "유령들의 축제" 시작</li>
+                                <li>새로운 장비 세트 3종 추가</li>
+                                <li>도시 발전도 시스템 개선</li>
+                                <li>그래픽 리소스 최적화</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 캐릭터 정보 섹션 -->
+        <section id="character-info" class="section">
+            <div class="container">
+                <h2>캐릭터 정보</h2>
+                <p class="section-description">레조넌스의 다양한 캐릭터를 만나보세요.</p>
+                
+                <div class="filter-tabs">
+                    <button class="tab-btn active" data-filter="all">전체</button>
+                    <button class="tab-btn" data-filter="front">앞열</button>
+                    <button class="tab-btn" data-filter="middle">중간열</button>
+                    <button class="tab-btn" data-filter="back">뒷열</button>
+                </div>
+                
+                <div class="character-grid">
+                    <!-- 캐릭터 카드들이 여기에 동적으로 로드됩니다 -->
+                    <div class="character-card" data-position="front">
+                        <div class="character-thumbnail" style="background-color: #ff6b6b;">
+                            <img src="https://via.placeholder.com/150" alt="이그니스">
+                        </div>
+                        <div class="character-info">
+                            <h3>이그니스</h3>
+                            <div class="character-meta">
+                                <span class="grade UR">UR</span>
+                                <span class="element fire">불</span>
+                                <span class="position">앞열</span>
+                            </div>
+                        </div>
+                        <div class="character-buttons">
+                            <button class="btn small info-btn" data-character="ignis">기본 정보</button>
+                            <button class="btn small detail-btn" data-character="ignis">상세 정보</button>
+                        </div>
+                    </div>
+                    
+                    <div class="character-card" data-position="middle">
+                        <div class="character-thumbnail" style="background-color: #74b9ff;">
+                            <img src="https://via.placeholder.com/150" alt="아쿠아리우스">
+                        </div>
+                        <div class="character-info">
+                            <h3>아쿠아리우스</h3>
+                            <div class="character-meta">
+                                <span class="grade SSR">SSR</span>
+                                <span class="element water">물</span>
+                                <span class="position">중간열</span>
+                            </div>
+                        </div>
+                        <div class="character-buttons">
+                            <button class="btn small info-btn" data-character="aquarius">기본 정보</button>
+                            <button class="btn small detail-btn" data-character="aquarius">상세 정보</button>
+                        </div>
+                    </div>
+                    
+                    <div class="character-card" data-position="back">
+                        <div class="character-thumbnail" style="background-color: #a29bfe;">
+                            <img src="https://via.placeholder.com/150" alt="제피로스">
+                        </div>
+                        <div class="character-info">
+                            <h3>제피로스</h3>
+                            <div class="character-meta">
+                                <span class="grade SSR">SSR</span>
+                                <span class="element wind">바람</span>
+                                <span class="position">뒷열</span>
+                            </div>
+                        </div>
+                        <div class="character-buttons">
+                            <button class="btn small info-btn" data-character="zephyros">기본 정보</button>
+                            <button class="btn small detail-btn" data-character="zephyros">상세 정보</button>
+                        </div>
+                    </div>
+                    
+                    <div class="character-card" data-position="front">
+                        <div class="character-thumbnail" style="background-color: #55efc4;">
+                            <img src="https://via.placeholder.com/150" alt="테라">
+                        </div>
+                        <div class="character-info">
+                            <h3>테라</h3>
+                            <div class="character-meta">
+                                <span class="grade SR">SR</span>
+                                <span class="element earth">땅</span>
+                                <span class="position">앞열</span>
+                            </div>
+                        </div>
+                        <div class="character-buttons">
+                            <button class="btn small info-btn" data-character="terra">기본 정보</button>
+                            <button class="btn small detail-btn" data-character="terra">상세 정보</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 캐릭터 상세 팝업 -->
+                <div id="character-modal" class="modal hidden">
+                    <div class="modal-content">
+                        <span class="close-btn">&times;</span>
+                        <div class="modal-body">
+                            <div class="modal-thumbnail">
+                                <img id="modal-character-img" src="https://via.placeholder.com/300" alt="">
+                            </div>
+                            <div class="modal-info">
+                                <h2 id="modal-character-name">캐릭터 이름</h2>
+                                <div class="modal-meta">
+                                    <span id="modal-character-grade" class="grade UR">UR</span>
+                                    <span id="modal-character-element" class="element fire">불</span>
+                                    <span id="modal-character-position" class="position">앞열</span>
+                                </div>
+                                
+                                <div class="modal-tabs">
+                                    <button class="modal-tab-btn active" data-tab="basic">기본 정보</button>
+                                    <button class="modal-tab-btn" data-tab="skills">스킬 정보</button>
+                                    <button class="modal-tab-btn" data-tab="equipment">추천 장비</button>
+                                </div>
+                                
+                                <div class="modal-tab-content active" data-tab="basic">
+                                    <h3>캐릭터 소개</h3>
+                                    <p id="modal-character-desc">캐릭터 설명이 여기에 표시됩니다.</p>
+                                    <h3>스탯</h3>
+                                    <div class="stats-grid" id="modal-character-stats">
+                                        <!-- 스탯 정보가 동적으로 로드됩니다 -->
+                                    </div>
+                                </div>
+                                
+                                <div class="modal-tab-content" data-tab="skills">
+                                    <div class="skills-container" id="modal-character-skills">
+                                        <!-- 스킬 정보가 동적으로 로드됩니다 -->
+                                    </div>
+                                </div>
+                                
+                                <div class="modal-tab-content" data-tab="equipment">
+                                    <div class="equipment-container" id="modal-character-equipment">
+                                        <!-- 장비 정보가 동적으로 로드됩니다 -->
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 도시 발전도 섹션 -->
+        <section id="urban-dev" class="section">
+            <div class="container">
+                <h2>도시 별 발전도 물품</h2>
+                <p class="section-description">각 도시마다 발전도 별 물품 정리</p>
+                
+                <div class="filter-tabs">
+                    <button class="tab-btn active" data-filter="all">전체</button>
+                    <button class="tab-btn" data-filter="major">대도시 기준</button>
+                    <button class="tab-btn" data-filter="unlocked">열린 물품</button>
+                    <button class="tab-btn" data-filter="locked">잠긴 물품</button>
+                </div>
+                
+                <div class="city-accordion">
+                    <!-- 대도시 1 -->
+                    <div class="city-card major-city">
+                        <div class="city-header">
+                            <h3>수도 크로노스</h3>
+                            <span class="dev-progress">발전도: 85%</span>
+                        </div>
+                        <div class="city-content">
+                            <!-- 하위 도시 1 -->
+                            <div class="sub-city">
+                                <h4>상업 지구</h4>
+                                <div class="item-list">
+                                    <div class="item unlocked">
+                                        <span class="item-name">고급 장비 상점</span>
+                                        <span class="item-req">발전도 20%</span>
+                                    </div>
+                                    <div class="item unlocked">
+                                        <span class="item-name">희귀 재료 상점</span>
+                                        <span class="item-req">발전도 45%</span>
+                                    </div>
+                                    <div class="item locked">
+                                        <span class="item-name">전설 무기 상점</span>
+                                        <span class="item-req">발전도 75%</span>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- 하위 도시 2 -->
+                            <div class="sub-city">
+                                <h4>항구 지구</h4>
+                                <div class="item-list">
+                                    <div class="item unlocked">
+                                        <span class="item-name">어선 장비 상점</span>
+                                        <span class="item-req">발전도 15%</span>
+                                    </div>
+                                    <div class="item unlocked">
+                                        <span class="item-name">해양 탐험 상점</span>
+                                        <span class="item-req">발전도 40%</span>
+                                    </div>
+                                    <div class="item unlocked">
+                                        <span class="item-name">해적의 보물 상점</span>
+                                        <span class="item-req">발전도 65%</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 대도시 2 -->
+                    <div class="city-card major-city">
+                        <div class="city-header">
+                            <h3>무역 도시 헤르메시아</h3>
+                            <span class="dev-progress">발전도: 60%</span>
+                        </div>
+                        <div class="city-content">
+                            <!-- 하위 도시 1 -->
+                            <div class="sub-city">
+                                <h4>중앙 시장</h4>
+                                <div class="item-list">
+                                    <div class="item unlocked">
+                                        <span class="item-name">일반 재료 상점</span>
+                                        <span class="item-req">발전도 10%</span>
+                                    </div>
+                                    <div class="item unlocked">
+                                        <span class="item-name">희귀 재료 상점</span>
+                                        <span class="item-req">발전도 30%</span>
+                                    </div>
+                                    <div class="item unlocked">
+                                        <span class="item-name">고급 재료 상점</span>
+                                        <span class="item-req">발전도 50%</span>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- 하위 도시 2 -->
+                            <div class="sub-city">
+                                <h4>동부 상가</h4>
+                                <div class="item-list">
+                                    <div class="item unlocked">
+                                        <span class="item-name">장인 공방</span>
+                                        <span class="item-req">발전도 20%</span>
+                                    </div>
+                                    <div class="item locked">
+                                        <span class="item-name">대장간</span>
+                                        <span class="item-req">발전도 55%</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 대도시 3 -->
+                    <div class="city-card major-city">
+                        <div class="city-header">
+                            <h3>학술 도시 아테네움</h3>
+                            <span class="dev-progress">발전도: 45%</span>
+                        </div>
+                        <div class="city-content">
+                            <!-- 하위 도시 1 -->
+                            <div class="sub-city">
+                                <h4>마법 학원</h4>
+                                <div class="item-list">
+                                    <div class="item unlocked">
+                                        <span class="item-name">초급 마법서 상점</span>
+                                        <span class="item-req">발전도 15%</span>
+                                    </div>
+                                    <div class="item unlocked">
+                                        <span class="item-name">중급 마법서 상점</span>
+                                        <span class="item-req">발전도 35%</span>
+                                    </div>
+                                    <div class="item locked">
+                                        <span class="item-name">고급 마법서 상점</span>
+                                        <span class="item-req">발전도 60%</span>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- 하위 도시 2 -->
+                            <div class="sub-city">
+                                <h4>연금술 연구소</h4>
+                                <div class="item-list">
+                                    <div class="item unlocked">
+                                        <span class="item-name">기초 연금술 재료</span>
+                                        <span class="item-req">발전도 20%</span>
+                                    </div>
+                                    <div class="item locked">
+                                        <span class="item-name">고급 연금술 재료</span>
+                                        <span class="item-req">발전도 50%</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- 푸터 -->
+    <footer id="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>레조넌스</h3>
+                    <p>게임 정보 사이트</p>
+                </div>
+                <div class="footer-section">
+                    <h3>빠른 링크</h3>
+                    <ul>
+                        <li><a href="#calculator">강화 계산기</a></li>
+                        <li><a href="#character-info">캐릭터 정보</a></li>
+                        <li><a href="#patch-notes">패치노트</a></li>
+                        <li><a href="#urban-dev">도시 발전도</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>연락처</h3>
+                    <p>문의: contact@resonance.game</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2023 레조넌스 게임 정보. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
